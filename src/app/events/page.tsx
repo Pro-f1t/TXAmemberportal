@@ -12,7 +12,7 @@ import { getBaseUrl } from "@/lib/utils/baseUrl";
 
 export const dynamic = "force-dynamic";
 
-const TYPE_TONE: Record<EventType, Tone> = { workshop: "ok", profdev: "warn", social: "accent", info: "muted", company: "danger" };
+const TYPE_TONE: Record<EventType, Tone> = { gm: "violet", workshop: "ok", profdev: "warn", social: "accent", info: "muted", company: "danger" };
 
 export default async function EventsPage() {
   const member = await memberPage("/events");

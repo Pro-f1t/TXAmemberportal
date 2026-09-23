@@ -58,7 +58,7 @@ export function PageHeader({ eyebrow, title, actions }: { eyebrow: ReactNode; ti
   );
 }
 
-export type Tone = "ok" | "warn" | "danger" | "muted" | "accent";
+export type Tone = "ok" | "warn" | "danger" | "muted" | "accent" | "violet";
 
 export function Badge({ tone = "muted", children, className = "" }: { tone?: Tone; children: ReactNode; className?: string }) {
   return <span className={`badge badge-${tone} ${className}`}>{children}</span>;

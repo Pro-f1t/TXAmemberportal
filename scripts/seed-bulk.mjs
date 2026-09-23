@@ -21,7 +21,7 @@ const TEAMS = [
 const d = (s) => new Date(s);
 const pick = (arr, i) => arr[i % arr.length];
 
-// ---------- 22 events across Aug–Dec, mixed past/future/draft ----------
+// ---------- 24 events across Aug–Dec, mixed past/future/draft ----------
 const EVENT_NAMES = [
   ["Fall Welcome Social", "social", "Union Patio"], ["Excel Bootcamp", "workshop", "CBA 4.330"], ["Case Prep Night", "profdev", "GDC 2.216"],
   ["Employer Panel: Consulting", "company", "CBA 3.202"], ["Coffee Chat: Software Team", "social", "Cabo Bob's"], ["Resume Review Drop-in", "profdev", "GDC Atrium"],
@@ -30,13 +30,13 @@ const EVENT_NAMES = [
   ["SQL Workshop", "workshop", "GDC 1.406"], ["Mock Case Interviews", "profdev", "CBA 4.348"], ["Coffee Chat: Healthcare Team", "social", "Medici"],
   ["Employer Panel: Government", "company", "PAI 2.48"], ["Photo Booth Night", "social", "Union Patio"], ["Final Readouts: Round 1", "profdev", "CBA 3.202"],
   ["Final Readouts: Round 2", "profdev", "CBA 3.202"], ["End of Semester Banquet", "social", "AT&T Center"], ["Spring Recruiting Prep", "info", "Virtual"],
-  ["Exec Applications Q&A", "info", "GDC 2.216"],
+  ["Exec Applications Q&A", "info", "GDC 2.216"], ["General Meeting: October", "gm", "CBA 4.330"], ["General Meeting: November", "gm", "CBA 4.330"],
 ];
 const TIMES = ["5:00 PM", "6:00 PM", "6:30 PM", "7:00 PM"];
 const eventDates = [
   "2026-08-20", "2026-08-25", "2026-08-31", "2026-09-06", "2026-09-07", "2026-09-09", "2026-09-14", "2026-09-16", "2026-09-20", "2026-09-23",
   "2026-09-30", "2026-10-08", "2026-10-13", "2026-10-20", "2026-10-22", "2026-10-27", "2026-10-30", "2026-11-05", "2026-11-12", "2026-11-19",
-  "2026-12-02", "2026-12-04",
+  "2026-12-02", "2026-12-04", "2026-10-06", "2026-11-03",
 ];
 const memberUids = ["seed-maya", "seed-jordan", "seed-priya", "seed-sam", "seed-elena", "seed-noah", "seed-grace", "seed-omar", "seed-ava", "seed-exec"];
 for (let i = 0; i < EVENT_NAMES.length; i++) {

@@ -116,9 +116,11 @@ export interface MemberApplication {
 // ---------- Events ----------
 
 // "company": an employer is in the room — showing up matters. Red badge.
-export type EventType = "workshop" | "profdev" | "social" | "info" | "company";
-export const EVENT_TYPES: EventType[] = ["workshop", "profdev", "social", "info", "company"];
+// "gm": general meeting. Violet badge.
+export type EventType = "gm" | "workshop" | "profdev" | "social" | "info" | "company";
+export const EVENT_TYPES: EventType[] = ["gm", "workshop", "profdev", "social", "info", "company"];
 export const EVENT_TYPE_LABEL: Record<EventType, string> = {
+  gm: "GM",
   workshop: "Workshop",
   profdev: "Prof dev",
   social: "Social",

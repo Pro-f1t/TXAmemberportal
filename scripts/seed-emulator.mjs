@@ -168,6 +168,8 @@ const EVENTS = [
     description: "Bring a printed resume. PwC recruiters review in small groups.", rsvp: ["seed-maya", "seed-jordan", "seed-noah", "seed-grace", "seed-omar"] },
   { id: "ev-case", title: "Consulting Case Night", startsAt: "2026-09-18T19:00:00-05:00", timeLabel: "7:00 PM", location: "GDC 2.216", type: "profdev", counts: true, capacity: 40,
     description: "Work a live case in teams of three with two PwC associates. Signup closes Friday; bring a laptop.", rsvp: ["seed-noah", "seed-omar"] },
+  { id: "ev-gm-sep", title: "General Meeting", startsAt: "2026-09-23T18:30:00-05:00", timeLabel: "6:30 PM", location: "CBA 4.330", type: "gm", counts: true,
+    description: "Field team updates, upcoming employer events, and the Q&A on spring projects.", rsvp: ["seed-maya", "seed-jordan", "seed-sam", "seed-elena", "seed-exec"] },
   { id: "ev-mock", title: "Mock Interview Day", startsAt: "2026-09-25T17:00:00-05:00", timeLabel: "5:00 PM", location: "CBA 3.202", type: "profdev", counts: true,
     description: "Sign up in pairs.", rsvp: [] },
   { id: "ev-retreat", title: "Fall Retreat", startsAt: "2026-10-04T09:00:00-05:00", timeLabel: "All day", location: "Zilker", type: "social", counts: true,
