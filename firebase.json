@@ -1,0 +1,30 @@
+{
+  "emulators": {
+    "auth": {
+      "port": 9098
+    },
+    "firestore": {
+      "port": 8081
+    },
+    "storage": {
+      "port": 9198
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4001
+    },
+    "hub": {
+      "port": 4401
+    },
+    "logging": {
+      "port": 4501
+    },
+    "singleProjectMode": true
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  }
+}

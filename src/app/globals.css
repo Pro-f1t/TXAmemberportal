@@ -1,0 +1,238 @@
+@import "tailwindcss";
+
+@theme {
+  /* --- Texas Accelerate brand tokens (from Project02 DESIGN.md) --- */
+  --color-bg: #08050f;
+  --color-surface: #16141c;
+  --color-footer: #00050c;
+  --color-accent: #60a5fa; /* blue-400 */
+  --color-ink: #08050f;
+  --color-muted: rgba(255, 255, 255, 0.62);
+  --color-muted-ink: rgba(8, 5, 15, 0.72);
+
+  /* A second surface for nested panels inside a card (used by the portal's
+     dashboards). Kept close to --surface so it reads as depth, not a new shade. */
+  --color-surface-2: #1e1b26;
+
+  /* Semantic status colours — for attendance rows, event badges, and decisions.
+     Not brand accent: these communicate state, not identity. */
+  --color-ok: #4ade80;        /* green-400  — attended / accepted / complete */
+  --color-warn: #f2b544;      /* amber       — in progress / pending / upcoming */
+  --color-danger: #f87171;    /* red-400     — missed / rejected */
+
+  --font-display: var(--font-syne), ui-sans-serif, system-ui, sans-serif;
+
+  --breakpoint-nav: 1180px;
+
+  /* Syne type scale (from Project02) */
+  --text-d2xl: 96px; --text-d2xl--line-height: 1.25;
+  --text-dxl: 72px;  --text-dxl--line-height: 1.25;
+  --text-dlg: 48px;  --text-dlg--line-height: 1.26;
+  --text-dmd: 36px;  --text-dmd--line-height: 1.29;
+  --text-dsm: 30px;  --text-dsm--line-height: 1.2;
+  --text-dxs: 24px;  --text-dxs--line-height: 1.32;
+  --text-txl: 20px;  --text-txl--line-height: 1.5;
+  --text-tlg: 18px;  --text-tlg--line-height: 1.55;
+  --text-tmd: 16px;  --text-tmd--line-height: 1.5;
+  --text-tsm: 14px;  --text-tsm--line-height: 1.4;
+  --text-txs: 12px;  --text-txs--line-height: 1.5;
+}
+
+html {
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--color-bg);
+  color: #fff;
+  font-family: var(--font-display);
+}
+
+/* --- Layout shell (from Project02) --- */
+.shell {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  padding-inline: 100px;
+}
+@media (max-width: 1439px) { .shell { padding-inline: 60px; } }
+@media (max-width: 1023px) { .shell { padding-inline: 40px; } }
+@media (max-width: 699px)  { .shell { padding-inline: 20px; } }
+
+.shell-x {
+  padding-inline: 100px;
+  scroll-padding-inline: 100px;
+}
+@media (max-width: 1439px) { .shell-x { padding-inline: 60px; scroll-padding-inline: 60px; } }
+@media (max-width: 1023px) { .shell-x { padding-inline: 40px; scroll-padding-inline: 40px; } }
+@media (max-width: 699px)  { .shell-x { padding-inline: 20px; scroll-padding-inline: 20px; } }
+
+/* Cancels the enclosing .shell padding so a child can run edge to edge.
+   Mirrors the same 100 / 60 / 40 / 20 steps (from Project02). */
+.bleed-x {
+  margin-inline: -100px;
+  width: calc(100% + 200px);
+}
+@media (max-width: 1439px) { .bleed-x { margin-inline: -60px; width: calc(100% + 120px); } }
+@media (max-width: 1023px) { .bleed-x { margin-inline: -40px; width: calc(100% + 80px); } }
+@media (max-width: 699px)  { .bleed-x { margin-inline: -20px; width: calc(100% + 40px); } }
+
+/* --- Semantic type (from Project02) --- */
+.h-display {
+  font-weight: 600; letter-spacing: -0.02em;
+  font-size: clamp(1.875rem, 4vw, 4rem); line-height: 1.25;
+}
+.h-hero {
+  font-weight: 600; letter-spacing: -0.02em;
+  font-size: clamp(1.875rem, 4.5vw, 4.5rem); line-height: 1.2;
+}
+.t-body {
+  font-size: clamp(0.8125rem, 1.125vw, 1.125rem);
+  line-height: 1.55; letter-spacing: -0.02em;
+}
+.t-card-title {
+  font-size: clamp(1.375rem, 1.9vw, 1.875rem);
+  line-height: 1.2; letter-spacing: -0.02em; font-weight: 700;
+}
+/* Section label / eyebrow — the small tracked caps used across the mockup. */
+.t-eyebrow {
+  font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--color-muted); font-weight: 600;
+}
+
+/* --- Reusable primitives (match Project02 conventions) --- */
+.card { border-radius: 32px; background: var(--color-surface); }
+
+/* Pill CTA: accent fill, dark ink, inverts to white on hover (Project02 pattern). */
+.pill {
+  display: inline-flex; align-items: center; gap: 0.625rem;
+  border-radius: 9999px; font-weight: 500; line-height: 1.5;
+  padding: 0.75rem 1.25rem; transition: background-color 300ms, color 300ms;
+}
+.pill-blue { background: var(--color-accent); color: var(--color-ink); }
+.pill-blue:hover { background: #fff; }
+.pill-dark { background: #000; color: #fff; }
+.pill-dark:hover { background: #262626; }
+.pill-ghost { background: rgba(255,255,255,0.06); color: #fff; }
+.pill-ghost:hover { background: var(--color-accent); color: var(--color-ink); }
+
+/* Status badge (event/attendance/decision states). */
+.badge {
+  display: inline-flex; align-items: center; gap: 0.375rem;
+  border-radius: 9999px; padding: 0.25rem 0.75rem;
+  font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600;
+}
+.badge-ok    { color: var(--color-ok);     background: color-mix(in srgb, var(--color-ok) 15%, transparent); }
+.badge-warn  { color: var(--color-warn);   background: color-mix(in srgb, var(--color-warn) 15%, transparent); }
+.badge-danger{ color: var(--color-danger); background: color-mix(in srgb, var(--color-danger) 15%, transparent); }
+.badge-muted { color: var(--color-muted);  background: rgba(255,255,255,0.06); }
+
+/* Dropdown / menu entrance (account menu). */
+@keyframes fade-slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-slide-down { animation: fade-slide-down 180ms cubic-bezier(0.4, 0, 0.2, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===================== Member portal additions ===================== */
+
+/* Page h2 (30/700/-0.02em/1.2) — every screen title. */
+.t-h2 { font-size: 30px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
+/* Home hero h1. */
+.t-h1 { font-weight: 600; letter-spacing: -0.02em; font-size: clamp(28px, 3.4vw, 44px); line-height: 1.2; }
+/* Card title (22/700). */
+.t-title { font-size: 22px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
+/* Field label inside editors (12/600/.06em caps). */
+.t-label { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-muted); font-weight: 600; }
+
+/* Pills: 15/600, 12/20. Sizes are classes, not overrides. */
+.pill { font-weight: 600; font-size: 15px; line-height: 1.5; padding: 12px 20px; white-space: nowrap; cursor: pointer; }
+.pill-sm { font-size: 14px; padding: 10px 18px; }
+.pill-xs { font-size: 13px; padding: 8px 14px; }
+.pill:disabled, .pill[aria-disabled="true"] { opacity: 0.5; cursor: default; }
+
+/* Chips: team / option toggles. Ghost at rest, accent when on. */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 9999px;
+  font-size: 13px; font-weight: 600; line-height: 1.4;
+  background: rgba(255,255,255,0.06); color: #fff;
+  transition: background-color 300ms, color 300ms; white-space: nowrap;
+}
+button.chip { cursor: pointer; }
+button.chip:hover, .chip-on { background: var(--color-accent); color: var(--color-ink); }
+.chip-lg { padding: 6px 14px; }
+.chip-static { cursor: default; }
+
+/* Accent badge (Pinned / Interview / Scheduled / Exec). */
+.badge-accent { color: var(--color-accent); background: rgba(96,165,250,0.15); }
+.badge { white-space: nowrap; }
+
+/* Nested row inside a card (surface-2). */
+.row { border-radius: 20px; background: var(--color-surface-2); padding: 16px 20px; }
+.row-lg { border-radius: 24px; padding: 20px 24px; }
+.row-wrap { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+a.row, button.row { transition: background-color 300ms; }
+a.row:hover, button.row:hover { background: #262230; }
+
+/* Hairline divider — the only legitimate border. */
+.hairline { height: 1px; background: rgba(255,255,255,0.12); }
+
+/* Inputs: surface-2, no border, radius 14. */
+.input, .textarea, .select {
+  width: 100%; box-sizing: border-box;
+  background: var(--color-surface-2); border: none; border-radius: 14px;
+  padding: 12px 16px; color: #fff; font-size: 14px; font-family: inherit; line-height: 1.4;
+  outline: none; transition: background-color 300ms;
+}
+.input::placeholder, .textarea::placeholder { color: rgba(255,255,255,0.4); }
+.input:focus, .textarea:focus, .select:focus { background: #262230; }
+.textarea { border-radius: 16px; padding: 14px 16px; line-height: 1.55; min-height: 120px; resize: vertical; }
+.input-pill { border-radius: 9999px; padding: 12px 20px; background: var(--color-surface); }
+.select {
+  appearance: none; cursor: pointer; padding-right: 40px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='m6 9 6 6 6-6' stroke='rgba(255,255,255,0.62)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat; background-position: right 14px center; background-size: 16px 16px; /* select-caret */
+}
+.select option { background: #1e1b26; color: #fff; }
+input[type="date"].input, input[type="datetime-local"].input { color-scheme: dark; }
+
+/* Exec rail item. */
+.rail-item {
+  display: block; border-radius: 8px; padding: 10px 16px;
+  font-size: 14px; font-weight: 600; color: var(--color-muted);
+  transition: background-color 300ms, color 300ms;
+}
+.rail-item:hover, .rail-item-on { color: #fff; background: var(--color-surface-2); }
+
+/* Attendance progress segment. */
+.seg { height: 8px; flex: 1; border-radius: 9999px; background: rgba(255,255,255,0.1); }
+.seg-on { background: var(--color-accent); }
+
+/* Arrow circle (44px). */
+.arrow {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 44px; width: 44px; border-radius: 9999px; flex-shrink: 0;
+  background: rgba(255,255,255,0.06); color: #fff; transition: background-color 300ms, color 300ms;
+}
+.arrow-on { background: var(--color-accent); color: var(--color-ink); }
+a:hover .arrow, .arrow:hover { background: var(--color-accent); color: var(--color-ink); }
+a:hover .arrow-on { background: #fff; }
+
+/* Stat tile inside the home hero. */
+.tile { border-radius: 24px; background: var(--color-surface-2); padding: 20px; }
+.tile-num { font-size: 32px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
+
+/* Mobile nav panel. */
+.nav-panel { background: rgba(8,5,15,0.85); backdrop-filter: blur(80px); -webkit-backdrop-filter: blur(80px); }
+
+/* Members / resume-book filter bar. */
+.filter-bar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }

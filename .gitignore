@@ -1,0 +1,43 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# production
+/build
+
+# env — never commit; production values live in Vercel
+.env*
+!.env.example
+
+# firebase
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+emulators.log
+.firebase/
+*adminsdk*.json
+*service-account*.json
+
+# logs / scratch
+npm-debug.log*
+yarn-*.log*
+build.log
+tsc.log
+npm-install.log
+*.log
+
+# local tooling
+/.claude/
+CLAUDE.md
+
+# misc
+.DS_Store
+*.pem
+.vercel
