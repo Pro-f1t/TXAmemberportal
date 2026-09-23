@@ -227,7 +227,7 @@ const APPS = [
 for (const a of APPS) await db.doc(`applications/${a.id}`).set(a.data, { merge: true });
 console.log(`applications ${APPS.length}`);
 
-await db.doc("config/portal").set({ season: "Fall 2026", week: 3, requiredEvents: 4, calendarUrl: "" }, { merge: true });
+await db.doc("config/portal").set({ season: "Fall 2026", week: 3, calendarUrl: "" }, { merge: true });
 console.log("config/portal set");
 console.log("\nDone. Sign in at /auth/login and pick a seeded @utexas.edu email in the emulator popup.");
 process.exit(0);

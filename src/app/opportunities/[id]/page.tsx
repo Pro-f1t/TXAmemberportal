@@ -5,7 +5,7 @@ import { getOpportunity, getApplicationsForMember, getEmployer } from "@/lib/fir
 import { isOpportunityLive, isPastDeadline, closesSoon, APPLICATION_STATUS_LABEL } from "@/lib/models/Portal";
 import { teamShort, visibleTo, resumeForTeam } from "@/lib/models/Member";
 import { isStaff } from "@/lib/auth/guard";
-import { Card, Eyebrow, Badge, Chip, ArtImage, Hairline, Pill } from "@/components/ui";
+import { Card, Eyebrow, Badge, Chip, ArtImage, Hairline, Pill, RichText } from "@/components/ui";
 import ApplyPanel from "@/components/ApplyPanel";
 import { fmtDateYear } from "@/lib/utils/format";
 
@@ -68,9 +68,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ id
           <Eyebrow>Summary</Eyebrow>
           <p className="m-0 mt-3 text-[18px] leading-[1.55]" style={{ letterSpacing: "-0.02em" }}>{opp.summary}</p>
           <Eyebrow className="mt-7">Job description</Eyebrow>
-          {opp.description.split(/\n\s*\n/).filter(Boolean).map((para, i) => (
-            <p key={i} className="m-0 text-[16px] leading-[1.55] text-muted" style={{ marginTop: i === 0 ? 12 : 14 }}>{para}</p>
-          ))}
+          <RichText text={opp.description} className="text-muted" firstGap={12} gap={14} />
           {isStaff(member) && (
             <div className="mt-7"><Pill href={`/admin/opportunities/${opp.id}`} size="sm">Edit in console</Pill></div>
           )}

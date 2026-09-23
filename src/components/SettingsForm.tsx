@@ -49,9 +49,8 @@ export default function SettingsForm({ config, feedUrl }: { config: PortalConfig
         <div className="mt-4 grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))" }}>
           <Field label="Season label" span><input className="input" value={form.season} onChange={(e) => set("season", e.target.value)} placeholder="Fall 2026" /></Field>
           <Field label="Current week"><input className="input" type="number" min={0} max={52} value={form.week} onChange={(e) => set("week", Number(e.target.value))} /></Field>
-          <Field label="Events required"><input className="input" type="number" min={0} max={30} value={form.requiredEvents} onChange={(e) => set("requiredEvents", Number(e.target.value))} /></Field>
         </div>
-        <p className="m-0 mt-3 text-[12px] text-muted">Shown on the Home hero and in every member&apos;s attendance progress.</p>
+        <p className="m-0 mt-3 text-[12px] text-muted">Shown on the Home hero.</p>
         <div className="mt-5 flex flex-wrap items-center gap-2.5">
           <Pill tone="blue" size="sm" onClick={save} disabled={busy}>{busy ? "Saving…" : "Save settings"}</Pill>
           {saved && <span className="text-[13px] text-ok">Saved</span>}

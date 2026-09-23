@@ -1,7 +1,7 @@
 import { memberPage } from "@/lib/auth/page";
 import { visibleAnnouncements, portalConfig } from "@/lib/portal/memberData";
 import { ANNOUNCEMENT_LABEL_TEXT } from "@/lib/models/Portal";
-import { PageHeader, Pill, Card, Eyebrow, Badge, Empty } from "@/components/ui";
+import { PageHeader, Pill, Card, Eyebrow, Badge, Empty, RichText } from "@/components/ui";
 import ShowMore from "@/components/ShowMore";
 import { groupByMonth } from "@/lib/utils/group";
 import { fmtDate } from "@/lib/utils/format";
@@ -25,7 +25,7 @@ export default async function AnnouncementsPage() {
         <span className="text-[12px] text-muted">{fmtDate(a.publishAt ?? a.createdAt)} · {a.authorName}</span>
       </div>
       <p className="m-0 mt-3 text-[20px] font-semibold" style={{ letterSpacing: "-0.02em" }}>{a.title}</p>
-      <p className="m-0 mt-2 text-[16px] leading-[1.55] text-muted">{a.body}</p>
+      <RichText text={a.body} className="text-muted" firstGap={8} />
     </div>
   );
 

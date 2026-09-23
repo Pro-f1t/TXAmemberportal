@@ -1,5 +1,5 @@
 import { getAllMembers, getInvites } from "@/lib/firebase/members";
-import { getAllApplications, getAllEvents, getPortalConfig } from "@/lib/firebase/portal";
+import { getAllApplications, getAllEvents } from "@/lib/firebase/portal";
 import { STAFF_ROLES, teamShort } from "@/lib/models/Member";
 import { splitEvents } from "@/lib/portal/memberData";
 import { PageHeader, Pill } from "@/components/ui";
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminMembers({ searchParams }: { searchParams: Promise<{ team?: string; invite?: string }> }) {
   const { team, invite } = await searchParams;
-  const [members, invites, apps, events, config] = await Promise.all([getAllMembers(), getInvites(), getAllApplications(), getAllEvents(), getPortalConfig()]);
+  const [members, invites, apps, events] = await Promise.all([getAllMembers(), getInvites(), getAllApplications(), getAllEvents()]);
   const { past } = splitEvents(events.filter((e) => e.status === "published" && e.countsForAttendance));
 
   const rows: MemberRowData[] = members.map((m) => {
@@ -25,7 +25,7 @@ export default async function AdminMembers({ searchParams }: { searchParams: Pro
     return {
       uid: m.uid, name: m.name, email: m.email, eid: m.eid, role: m.role, teams: m.teams,
       meta: [[m.major, m.major2].filter(Boolean).join(" & "), m.gradDate, staff ? "Exec" : "", m.teams.map(teamShort).join(", ")].filter(Boolean).join(" · "),
-      counts: staff ? `Exec · ${attended}/${config.requiredEvents} events` : `${nApps} application${nApps === 1 ? "" : "s"} · ${attended}/${config.requiredEvents} events · ${m.resumes.length} resume${m.resumes.length === 1 ? "" : "s"}`,
+      counts: staff ? `Exec · ${attended} event${attended === 1 ? "" : "s"}` : `${nApps} application${nApps === 1 ? "" : "s"} · ${attended} event${attended === 1 ? "" : "s"} · ${m.resumes.length} resume${m.resumes.length === 1 ? "" : "s"}`,
       flag,
     };
   });

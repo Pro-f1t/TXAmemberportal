@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { ChevronDown } from "./Icons";
-import { Badge, DateBlock, Tone } from "./ui";
+import { Badge, DateBlock, RichText, Tone } from "./ui";
 
 /**
  * A member-facing event row. When the event has a description, clicking the
@@ -38,7 +38,7 @@ export default function EventRow({
         </div>
       </div>
       {open && (
-        <p className="m-0 mt-3 text-[15px] leading-[1.55] text-muted" style={{ paddingLeft: 76 }}>{description}</p>
+        <div className="mt-3" style={{ paddingLeft: 76 }}><RichText text={description} size={15} gap={8} className="text-muted" /></div>
       )}
     </div>
   );

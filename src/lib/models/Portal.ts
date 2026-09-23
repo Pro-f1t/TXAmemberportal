@@ -207,7 +207,7 @@ export interface Employer {
 export interface PortalConfig {
   season: string; // "Fall 2026"
   week: number; // shown on the home hero
-  requiredEvents: number; // attendance requirement per semester
   calendarUrl: string; // optional external calendar link (else the ICS feed)
 }
-export const DEFAULT_CONFIG: PortalConfig = { season: "Fall 2026", week: 3, requiredEvents: 4, calendarUrl: "" };
+// There is no attendance requirement (Jamie, 2026-09-22): events attended is a plain counter.
+export const DEFAULT_CONFIG: PortalConfig = { season: "Fall 2026", week: 3, calendarUrl: "" };

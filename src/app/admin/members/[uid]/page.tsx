@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { staffPage } from "@/lib/auth/page";
 import { getMember } from "@/lib/firebase/members";
-import { getApplicationsForMember, getAllEvents, getPortalConfig } from "@/lib/firebase/portal";
+import { getApplicationsForMember, getAllEvents } from "@/lib/firebase/portal";
 import { teamShort } from "@/lib/models/Member";
 import { splitEvents, attendanceState } from "@/lib/portal/memberData";
 import { PageHeader, Pill, Card, Eyebrow, Empty } from "@/components/ui";
@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic";
 export default async function MemberDetail({ params }: { params: Promise<{ uid: string }> }) {
   const actor = await staffPage();
   const { uid } = await params;
-  const [m, apps, events, config] = await Promise.all([getMember(uid), getApplicationsForMember(uid), getAllEvents(), getPortalConfig()]);
+  const [m, apps, events] = await Promise.all([getMember(uid), getApplicationsForMember(uid), getAllEvents()]);
   if (!m) notFound();
   const published = events.filter((e) => e.status === "published");
   const { upcoming, past } = splitEvents(published);
@@ -70,7 +70,6 @@ export default async function MemberDetail({ params }: { params: Promise<{ uid: 
           <MemberEvents
             uid={uid}
             attended={attended}
-            required={config.requiredEvents}
             rows={[...past, ...upcoming].map((e) => ({ id: e.id, title: e.title, meta: `${fmtDate(e.startsAt)} · ${e.location}${e.rsvpUids.includes(uid) && attendanceState(e, uid) === "upcoming" ? " · RSVP'd" : ""}`, state: attendanceState(e, uid), counts: e.countsForAttendance }))}
           />
         </div>

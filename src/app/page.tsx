@@ -2,7 +2,7 @@ import Link from "next/link";
 import { memberPage } from "@/lib/auth/page";
 import { visibleOpportunities, visibleEvents, visibleAnnouncements, memberApplications, splitEvents, portalConfig } from "@/lib/portal/memberData";
 import { ANNOUNCEMENT_LABEL_TEXT, IN_PROGRESS_STATUSES } from "@/lib/models/Portal";
-import { Card, Eyebrow, Badge, Pill, EventMini, Empty } from "@/components/ui";
+import { Card, Eyebrow, Badge, Pill, EventMini, Empty, RichText } from "@/components/ui";
 import { fmtDate } from "@/lib/utils/format";
 
 export const dynamic = "force-dynamic";
@@ -79,7 +79,7 @@ export default async function HomePage() {
                     <span className="text-[12px] text-muted">{fmtDate(a.publishAt ?? a.createdAt)} · {a.authorName}</span>
                   </div>
                   <p className="m-0 mt-3 text-[20px] font-semibold" style={{ letterSpacing: "-0.02em" }}>{a.title}</p>
-                  <p className="m-0 mt-2 text-[16px] leading-[1.55] text-muted">{a.body}</p>
+                  <RichText text={a.body} className="text-muted" firstGap={8} />
                 </div>
               ))}
             </div>

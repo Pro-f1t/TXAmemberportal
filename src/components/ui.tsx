@@ -234,6 +234,31 @@ export function ArrowCircle({ on = false }: { on?: boolean }) {
   );
 }
 
+const URL_RE = /(https?:\/\/[^\s<>"']+[^\s<>"'.,;:!?)\]])/g;
+
+/**
+ * Long text typed into a textarea (announcement bodies, event and posting
+ * descriptions). Blank lines become paragraphs, single line breaks are kept,
+ * and bare URLs become links. Anything pasted from Slack or email keeps its shape.
+ */
+export function RichText({ text, className = "", size = 16, gap = 12, firstGap = 0, style }: { text: string; className?: string; size?: 15 | 16; gap?: number; firstGap?: number; style?: CSSProperties }) {
+  const paras = text.replace(/\r\n?/g, "\n").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  if (paras.length === 0) return null;
+  return (
+    <>
+      {paras.map((para, i) => (
+        <p key={i} className={`m-0 whitespace-pre-line leading-[1.55] ${className}`} style={{ fontSize: size, marginTop: i === 0 ? firstGap : gap, overflowWrap: "anywhere", ...style }}>
+          {para.split(URL_RE).map((part, j) =>
+            j % 2 === 1
+              ? <a key={j} href={part} target="_blank" rel="noreferrer" className="text-accent underline-offset-2 hover:underline">{part}</a>
+              : part
+          )}
+        </p>
+      ))}
+    </>
+  );
+}
+
 export function Empty({ children }: { children: ReactNode }) {
   return <p className="m-0 text-[15px] text-muted">{children}</p>;
 }

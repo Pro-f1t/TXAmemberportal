@@ -8,8 +8,8 @@ import type { AttendanceState } from "@/lib/portal/memberData";
 
 type RowT = { id: string; title: string; meta: string; state: AttendanceState; counts: boolean };
 
-/** "Events · 2 of 4 required" on member detail, with Mark attended / Excuse. */
-export default function MemberEvents({ uid, attended, required, rows }: { uid: string; attended: number; required: number; rows: RowT[] }) {
+/** "Events · 2 attended" on member detail, with Mark attended / Excuse. */
+export default function MemberEvents({ uid, attended, rows }: { uid: string; attended: number; rows: RowT[] }) {
   const router = useRouter();
   const [picking, setPicking] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
@@ -30,7 +30,7 @@ export default function MemberEvents({ uid, attended, required, rows }: { uid: s
   return (
     <Card className="flex-1">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Eyebrow>Events · {attended} of {required} required</Eyebrow>
+        <Eyebrow>Events · {attended} attended</Eyebrow>
         <button type="button" className="pill pill-ghost pill-xs" onClick={() => setPicking((v) => !v)} aria-expanded={picking}>{picking ? "Cancel" : "Mark attended"}</button>
       </div>
       {picking && (
