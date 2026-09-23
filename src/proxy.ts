@@ -25,9 +25,10 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL(target, request.url));
   }
 
-  if (pathname.startsWith("/admin") && (!role || !STAFF_ROLES.includes(role))) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
+  // /admin is NOT gated on the role cookie here. The cookie is written at
+  // sign-in and goes stale when an exec promotes someone mid-session (they'd
+  // see the Console button but bounce back to Home). The admin layout's
+  // staffPage() checks the real role on every request and redirects non-staff.
 
   return NextResponse.next();
 }

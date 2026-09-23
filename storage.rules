@@ -1,15 +1,11 @@
 rules_version = '2';
-// Production rules. Any signed-in user may upload into the resumes/ and images/
-// trees (the app namespaces each file under the uploader's uid) and read files
-// back — getDownloadURL() is a read, so the uploader needs read to obtain the
-// link. Paths carry an unguessable uid+timestamp; staff open the tokenized URL.
+// Nothing talks to Storage from the browser. Uploads go through the portal's
+// API (Admin SDK) and every object carries a download token, which token URLs
+// use to bypass rules. Publish these under Storage → Rules in the console.
 service firebase.storage {
   match /b/{bucket}/o {
-    match /{folder}/{allPaths=**} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null
-                   && folder in ['resumes', 'images']
-                   && request.resource.size < 25 * 1024 * 1024;
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }

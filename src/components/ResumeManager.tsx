@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { api } from "@/lib/utils/api";
-import { uploadFile } from "@/lib/firebase/upload";
+import { uploadViaApi } from "@/lib/firebase/upload";
 import { TEAMS, teamShort, Team, MAX_RESUMES } from "@/lib/models/Member";
 import { Badge, Chip, Eyebrow, Pill } from "@/components/ui";
 import { fmtDate, fmtBytes } from "@/lib/utils/format";
@@ -37,11 +37,8 @@ export default function ResumeManager({ uid, resumes, memberTeams }: { uid: stri
   const onUpload = (file: File | undefined) => {
     if (!file) return;
     if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) { setError("Resumes must be PDFs."); return; }
-    if (file.size > 10 * 1024 * 1024) { setError("Keep resumes under 10 MB."); return; }
-    run(async () => {
-      const url = await uploadFile("resumes", uid, file);
-      await api("/api/profile/resumes", "POST", { fileName: file.name, url, size: file.size });
-    });
+    if (file.size > 4 * 1024 * 1024) { setError("Keep resumes under 4 MB."); return; }
+    run(() => uploadViaApi("/api/profile/resumes/upload", file));
   };
 
   const assign = (id: string, team: Team) => run(() => api("/api/profile/resumes", "PATCH", { id, action: "toggleTeam", team }));

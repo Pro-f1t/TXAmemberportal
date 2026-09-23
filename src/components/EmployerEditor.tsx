@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { api } from "@/lib/utils/api";
-import { uploadFile } from "@/lib/firebase/upload";
+import { uploadViaApi, shrinkImage } from "@/lib/firebase/upload";
 import { TEAMS, teamShort, Team } from "@/lib/models/Member";
 import { EmployerStatus } from "@/lib/models/Portal";
 import { Badge, Chip, Eyebrow, Field, Hairline, Pill, Row, RowText } from "@/components/ui";
@@ -43,7 +43,9 @@ export default function EmployerEditor({ uid, employer, postings }: { uid: strin
     setBusy(true);
     setError(null);
     try {
-      set("logoUrl", await uploadFile("images", uid, file));
+      // SVGs pass through untouched; raster logos are downscaled like everything else.
+      const upload = file.type === "image/svg+xml" ? file : await shrinkImage(file, 1200);
+      set("logoUrl", (await uploadViaApi("/api/admin/uploads/image", upload)).url);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed.");
     } finally {

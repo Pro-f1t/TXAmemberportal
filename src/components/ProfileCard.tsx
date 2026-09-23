@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { api } from "@/lib/utils/api";
-import { uploadFile } from "@/lib/firebase/upload";
+import { uploadViaApi, shrinkImage } from "@/lib/firebase/upload";
 import { TEAMS, teamShort, Team } from "@/lib/models/Member";
 import { MAJORS, GRAD_YEARS, normaliseGrad } from "@/data/majors";
 import { Chip, Hairline, KeyValue, Pill, Field } from "@/components/ui";
@@ -49,8 +49,7 @@ export default function ProfileCard({ member }: { member: M }) {
     setBusy(true);
     setError(null);
     try {
-      const url = await uploadFile("images", member.uid, file);
-      await api("/api/profile", "PATCH", { photoUrl: url });
+      const { url } = await uploadViaApi("/api/profile/photo", await shrinkImage(file));
       setPhoto(url);
       router.refresh();
     } catch (e) {

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { api } from "@/lib/utils/api";
-import { uploadFile } from "@/lib/firebase/upload";
+import { uploadViaApi, shrinkImage } from "@/lib/firebase/upload";
 import { TEAMS, teamShort, Team } from "@/lib/models/Member";
 import { OpportunityStatus, OPPORTUNITY_STATUS_LABEL, PostingQuestion, MAX_QUESTIONS } from "@/lib/models/Portal";
 import { Badge, Chip, Hairline, Pill, ArtImage } from "@/components/ui";
@@ -70,7 +70,7 @@ export default function PostingEditor({
     setBusy(true);
     setError(null);
     try {
-      const url = await uploadFile("images", uid, file);
+      const { url } = await uploadViaApi("/api/admin/uploads/image", await shrinkImage(file, 1600));
       set("previewImageUrl", url);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed.");

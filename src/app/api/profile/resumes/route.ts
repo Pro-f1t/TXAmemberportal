@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { requireUser, guardErrorStatus } from "@/lib/auth/guard";
 import { setMemberResumes } from "@/lib/firebase/members";
-import { Resume, MAX_RESUMES, isTeam } from "@/lib/models/Member";
-import { newId, str } from "@/lib/firebase/fs";
+import { isTeam } from "@/lib/models/Member";
+import { str } from "@/lib/firebase/fs";
+import { normaliseResumes as normalise } from "@/lib/portal/resumes";
 
 function fail(error: unknown) {
   const status = guardErrorStatus(error);
@@ -10,37 +11,7 @@ function fail(error: unknown) {
   return NextResponse.json({ error: error instanceof Error ? error.message : "Request failed." }, { status: 400 });
 }
 
-/** Invariant: exactly one default when any resume exists. */
-function normalise(resumes: Resume[]): Resume[] {
-  if (resumes.length && !resumes.some((r) => r.isDefault)) resumes[0].isDefault = true;
-  let seen = false;
-  for (const r of resumes) {
-    if (r.isDefault && seen) r.isDefault = false;
-    if (r.isDefault) seen = true;
-  }
-  return resumes;
-}
-
-/** Register an uploaded PDF (the file itself went straight to Storage). */
-export async function POST(request: Request) {
-  try {
-    const { member } = await requireUser();
-    const body = await request.json();
-    const url = str(body.url, 2000).trim();
-    const fileName = str(body.fileName, 200).trim() || "resume.pdf";
-    const size = Number(body.size) || 0;
-    if (!url) throw new Error("Missing file.");
-    if (member.resumes.length >= MAX_RESUMES) throw new Error(`You can keep up to ${MAX_RESUMES} resumes. Delete one first.`);
-    const resumes = normalise([
-      ...member.resumes,
-      { id: newId(), fileName, url, size, uploadedAt: new Date(), assignedTeams: [], isDefault: member.resumes.length === 0 },
-    ]);
-    await setMemberResumes(member.uid, resumes);
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    return fail(error);
-  }
-}
+// Uploads: POST /api/profile/resumes/upload (multipart) — see ./upload/route.ts.
 
 /** toggleTeam: assign/unassign a team (a team lives on at most one resume). setDefault. */
 export async function PATCH(request: Request) {
