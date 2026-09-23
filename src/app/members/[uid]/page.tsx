@@ -38,10 +38,10 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
       </div>
       <div className="mt-5 grid items-start gap-6" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
         <Card className="flex flex-col">
-          <span className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl text-[28px] font-semibold text-accent" style={{ background: "var(--color-surface-2)" }}>
+          <span className="flex items-center justify-center overflow-hidden rounded-3xl text-[36px] font-semibold text-accent" style={{ width: 160, height: 200, background: "var(--color-surface-2)", letterSpacing: "-0.03em" }}>
             {m.photoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={m.photoUrl} alt={m.name} className="h-full w-full object-cover" />
+              <img src={m.photoUrl} alt={m.name} className="h-full w-full object-cover object-top" />
             ) : initials(m.name)}
           </span>
           <div className="mt-5 flex flex-wrap items-center gap-3">

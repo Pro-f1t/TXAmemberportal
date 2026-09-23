@@ -69,7 +69,7 @@ export default function ProfileCard({ member }: { member: M }) {
           type="button"
           onClick={() => fileRef.current?.click()}
           className="group relative block shrink-0 overflow-hidden rounded-3xl"
-          style={{ width: 96, height: 96, background: "var(--color-surface-2)", outline: photo ? "none" : "2px dashed rgba(96,165,250,0.5)", outlineOffset: -2 }}
+          style={{ width: 208, height: 260, background: "var(--color-surface-2)", outline: photo ? "none" : "2px dashed rgba(96,165,250,0.5)", outlineOffset: -2 }}
           title={photo ? "Change your headshot" : "Upload a headshot"}
           aria-label={photo ? "Change your headshot" : "Upload a headshot"}
           disabled={busy}
@@ -77,7 +77,7 @@ export default function ProfileCard({ member }: { member: M }) {
           {photo ? (
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={photo} alt={displayName} className="h-full w-full object-cover" />
+              <img src={photo} alt={displayName} className="h-full w-full object-cover object-top" />
               <span className="absolute inset-0 flex items-center justify-center text-[12px] font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100" style={{ background: "rgba(8,5,15,0.6)" }}>Change</span>
             </>
           ) : (
@@ -89,7 +89,7 @@ export default function ProfileCard({ member }: { member: M }) {
         </button>
         <div className="min-w-0">
           <p className="m-0 text-[14px] font-semibold">{photo ? "Your headshot" : "Add a headshot"}</p>
-          <p className="m-0 mt-1 text-[12px] text-muted">Professional headshot preferred.</p>
+          <p className="m-0 mt-1 text-[12px] text-muted">Professional headshot preferred. Portrait crop, shoulders up.</p>
           <button type="button" onClick={() => fileRef.current?.click()} disabled={busy} className="pill pill-ghost pill-xs mt-2.5">
             {busy ? "Uploading…" : photo ? "Change photo" : "Upload headshot"}
           </button>

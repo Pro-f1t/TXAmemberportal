@@ -35,22 +35,27 @@ export default function MemberDirectory({ rows }: { rows: DirectoryRow[] }) {
       {shown.length === 0 ? (
         <Card><Empty>No members match.</Empty></Card>
       ) : (
-        <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
+        // Portrait tiles: cap the card, not the grid, so 2-up at half-width never
+        // outgrows 4-up on desktop (see LEARNINGS 2026-08-09).
+        <div className="grid gap-4 justify-items-center" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))" }}>
           {visible.map((r) => (
-            <Link key={r.uid} href={`/members/${r.uid}`} className="card flex min-w-0 items-center gap-4 transition-colors" style={{ padding: 20 }}>
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl text-[18px] font-semibold text-accent" style={{ background: "var(--color-surface-2)" }}>
+            <Link key={r.uid} href={`/members/${r.uid}`} className="card flex w-full min-w-0 flex-col overflow-hidden transition-colors" style={{ maxWidth: 300, padding: 0 }}>
+              <span className="relative block w-full overflow-hidden" style={{ aspectRatio: "4 / 5", background: "var(--color-surface-2)" }}>
                 {r.photoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={r.photoUrl} alt={r.name} className="h-full w-full object-cover" />
-                ) : initials(r.name)}
+                  <img src={r.photoUrl} alt={r.name} className="absolute inset-0 h-full w-full object-cover object-top" />
+                ) : (
+                  <span className="absolute inset-0 flex items-center justify-center text-[44px] font-semibold text-accent" style={{ letterSpacing: "-0.03em" }}>{initials(r.name)}</span>
+                )}
+                {r.role && <Badge tone="accent" className="absolute left-3 top-3">{r.role}</Badge>}
               </span>
-              <span className="min-w-0">
-                <span className="flex flex-wrap items-center gap-2">
-                  <span className="truncate text-[16px] font-semibold">{r.name}</span>
-                  {r.role && <Badge tone="accent">{r.role}</Badge>}
+              <span className="flex min-w-0 flex-col gap-1.5" style={{ padding: "16px 18px 18px" }}>
+                <span className="truncate text-[17px] font-semibold" style={{ letterSpacing: "-0.02em" }}>{r.name}</span>
+                <span className="truncate text-[13px] text-muted">{r.meta || "Major not set"}</span>
+                <span className="mt-1 flex flex-wrap gap-1.5">
+                  {r.teams.length === 0 && <span className="text-[12px] text-muted">No team yet</span>}
+                  {r.teams.map((t) => <span key={t} className="chip chip-static">{teamShort(t)}</span>)}
                 </span>
-                <span className="mt-1 block truncate text-[12px] text-muted">{r.meta || "—"}</span>
-                <span className="mt-1 block truncate text-[12px] text-muted">{r.teams.map(teamShort).join(", ") || "No team yet"}</span>
               </span>
             </Link>
           ))}
