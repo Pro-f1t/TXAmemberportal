@@ -69,7 +69,7 @@ export default function ProfileCard({ member }: { member: M }) {
           type="button"
           onClick={() => fileRef.current?.click()}
           className="group relative block shrink-0 overflow-hidden rounded-3xl"
-          style={{ width: 208, height: 260, background: "var(--color-surface-2)", outline: photo ? "none" : "2px dashed rgba(96,165,250,0.5)", outlineOffset: -2 }}
+          style={{ width: 168, height: 210, background: "var(--color-surface-2)", outline: photo ? "none" : "2px dashed rgba(96,165,250,0.5)", outlineOffset: -2 }}
           title={photo ? "Change your headshot" : "Upload a headshot"}
           aria-label={photo ? "Change your headshot" : "Upload a headshot"}
           disabled={busy}

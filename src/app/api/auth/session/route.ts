@@ -44,7 +44,7 @@ export async function POST(request: Request) {
         role: bootstrap ? "exec" : invite?.role ?? "member",
         status: bootstrap || invite ? "active" : "pending",
         teams: invite?.teams ?? [],
-        photoUrl: record.photoURL || "",
+        photoUrl: "", // never the Google avatar — members upload a real headshot (initials until then)
         memberSince: new Date(),
         createdAt: new Date(),
       });

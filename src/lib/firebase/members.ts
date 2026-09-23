@@ -2,6 +2,11 @@ import { adminDb } from "./admin";
 import { toDate, toDateOr, pruneUndefined } from "./fs";
 import { Member, MemberRole, MemberStatus, Resume, Team, isTeam, MEMBER_ROLES, MEMBER_STATUSES } from "@/lib/models/Member";
 
+/** Google account avatars (lh3.googleusercontent.com) are never shown — members upload their own headshot. */
+function isGoogleAvatar(url: unknown): boolean {
+  return typeof url === "string" && /^https?:\/\/[^/]*googleusercontent\.com\//i.test(url);
+}
+
 const MEMBERS = "members";
 const INVITES = "invites";
 
@@ -37,7 +42,7 @@ export function toMember(data: any): Member {
     phone: data.phone ?? "",
     eid: data.eid ?? "",
     linkedin: data.linkedin ?? "",
-    photoUrl: data.photoUrl ?? "",
+    photoUrl: isGoogleAvatar(data.photoUrl) ? "" : data.photoUrl ?? "",
     resumes: (Array.isArray(data.resumes) ? data.resumes : []).map(toResume),
     memberSince: toDateOr(data.memberSince, toDateOr(data.createdAt, new Date())),
     createdAt: toDateOr(data.createdAt, new Date()),
