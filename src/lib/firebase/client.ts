@@ -18,7 +18,7 @@ const useEmulator = process.env.NEXT_PUBLIC_FIREBASE_EMULATOR === "1";
 // it. On the client that's the current host; the string fallback only applies
 // during SSR, where no auth call runs.
 const authDomain =
-  typeof window !== "undefined" ? window.location.host : "txa-portal.vercel.app";
+  typeof window !== "undefined" ? window.location.host : "txa-portal.org";
 
 export const firebaseConfig = {
   apiKey: "AIzaSyAbWsz1WepeH9hNBxq2lrYUjfWx-a3GKbg",
