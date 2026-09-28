@@ -1,6 +1,6 @@
 import { getAllMembers, getInvites } from "@/lib/firebase/members";
 import { getAllApplications, getAllEvents, getPortalConfig } from "@/lib/firebase/portal";
-import { STAFF_ROLES, teamShort } from "@/lib/models/Member";
+import { STAFF_ROLES, teamShort, byRoleThenName } from "@/lib/models/Member";
 import { splitEvents } from "@/lib/portal/memberData";
 import { PageHeader, Pill } from "@/components/ui";
 import MembersList, { MemberRowData } from "@/components/MembersList";
@@ -12,7 +12,7 @@ export default async function AdminMembers({ searchParams }: { searchParams: Pro
   const [members, invites, apps, events, config] = await Promise.all([getAllMembers(), getInvites(), getAllApplications(), getAllEvents(), getPortalConfig()]);
   const { past } = splitEvents(events.filter((e) => e.status === "published" && e.countsForAttendance));
 
-  const rows: MemberRowData[] = members.map((m) => {
+  const rows: MemberRowData[] = [...members].sort(byRoleThenName).map((m) => {
     const attended = past.filter((e) => e.attendedUids.includes(m.uid)).length;
     const nApps = apps.filter((a) => a.userId === m.uid).length;
     const staff = STAFF_ROLES.includes(m.role);

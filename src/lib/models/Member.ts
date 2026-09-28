@@ -34,6 +34,15 @@ export function isTeam(v: unknown): v is Team {
 // revoke exec (never their own); admin is the same plus it can't be demoted.
 export type MemberRole = "member" | "lead" | "exec" | "admin";
 export const MEMBER_ROLES: MemberRole[] = ["member", "lead", "exec", "admin"];
+
+// Roster order everywhere members are listed: exec (admin sits with exec),
+// then field team leads, then members; alphabetical within each group.
+// Rank 0 is kept free for directors once that tier exists.
+const ROLE_ORDER: Record<MemberRole, number> = { admin: 1, exec: 1, lead: 2, member: 3 };
+
+export function byRoleThenName(a: { role: MemberRole; name: string }, b: { role: MemberRole; name: string }): number {
+  return ROLE_ORDER[a.role] - ROLE_ORDER[b.role] || (a.name || "").localeCompare(b.name || "");
+}
 // "Staff" = everyone who can open the exec console. Keep in sync with proxy.ts
 // and Nav.tsx (middleware can't import from here cleanly).
 export const STAFF_ROLES: MemberRole[] = ["exec", "admin"];

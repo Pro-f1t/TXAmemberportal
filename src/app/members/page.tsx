@@ -1,7 +1,7 @@
 import { memberPage } from "@/lib/auth/page";
 import { getAllMembers } from "@/lib/firebase/members";
 import { portalConfig } from "@/lib/portal/memberData";
-import { STAFF_ROLES } from "@/lib/models/Member";
+import { STAFF_ROLES, byRoleThenName } from "@/lib/models/Member";
 import { PageHeader } from "@/components/ui";
 import MemberDirectory from "@/components/MemberDirectory";
 
@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export default async function MembersPage() {
   await memberPage("/members");
   const [config, members] = await Promise.all([portalConfig(), getAllMembers()]);
-  const active = members.filter((m) => m.status === "active");
+  const active = members.filter((m) => m.status === "active").sort(byRoleThenName);
 
   return (
     <section className="shell pb-16" style={{ paddingTop: 90 }}>
