@@ -46,7 +46,7 @@ export default async function MemberDetail({ params }: { params: Promise<{ uid: 
           actorUid={actor.uid}
           member={{
             uid: m.uid, firstName: m.firstName, lastName: m.lastName, name: m.name, eid: m.eid, email: m.email, phone: m.phone, major: m.major, major2: m.major2, gradDate: m.gradDate,
-            linkedin: m.linkedin, teams: m.teams, role: m.role, status: m.status,
+            linkedin: m.linkedin, teams: m.teams, role: m.role, director: m.director, title: m.title, status: m.status,
             resumes: m.resumes.map((r) => ({ id: r.id, fileName: r.fileName, url: r.url, size: r.size, uploadedAt: r.uploadedAt.toISOString(), assignedTeams: r.assignedTeams, isDefault: r.isDefault })),
           }}
         />

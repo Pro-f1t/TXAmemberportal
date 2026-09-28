@@ -35,7 +35,7 @@ const resume = (id, fileName, size, uploadedAt, assignedTeams = [], isDefault = 
 // ---------- members ----------
 const MEMBERS = [
   { uid: "seed-admin", email: "jamie@utexas.edu", name: "Jamie Hao", role: "admin", status: "active", teams: [T.BUSINESS], major: "Biomedical Engineering", gradDate: "Class of 2027", eid: "jh12345", memberSince: "2025-08-20" },
-  { uid: "seed-exec", email: "dev.shah@utexas.edu", name: "Dev Shah", role: "exec", status: "active", teams: [T.BUSINESS], major: "Finance", gradDate: "Class of 2027", eid: "ds44210", memberSince: "2025-08-20",
+  { uid: "seed-exec", email: "dev.shah@utexas.edu", name: "Dev Shah", role: "exec", director: true, title: "Director of Operations", status: "active", teams: [T.BUSINESS], major: "Finance", gradDate: "Class of 2027", eid: "ds44210", memberSince: "2025-08-20",
     resumes: [resume("r-dev-1", "Shah_Resume.pdf", 201_000, "2026-08-20T12:00:00-05:00", [], true)] },
   { uid: "seed-maya", email: "maya.patel@utexas.edu", name: "Maya Patel", role: "member", status: "active", teams: [T.BUSINESS, T.MARKETING], major: "Finance", gradDate: "Class of 2028", eid: "mp42837", phone: "(512) 555-0148", linkedin: "linkedin.com/in/mayapatel", memberSince: "2025-08-25",
     resumes: [
@@ -68,7 +68,7 @@ for (const m of MEMBERS) {
   const [firstName, ...rest] = m.name.split(" ");
   await db.doc(`members/${m.uid}`).set({
     uid: m.uid, email: m.email, name: m.name, firstName, lastName: rest.join(" "),
-    role: m.role, status: m.status, teams: m.teams, major: m.major ?? "", gradDate: m.gradDate ?? "",
+    role: m.role, director: m.director ?? false, title: m.title ?? "", status: m.status, teams: m.teams, major: m.major ?? "", gradDate: m.gradDate ?? "",
     phone: m.phone ?? "", eid: m.eid ?? "", linkedin: m.linkedin ?? "", photoUrl: "",
     resumes: m.resumes ?? [], memberSince: d(m.memberSince), createdAt: d(m.memberSince),
   }, { merge: true });

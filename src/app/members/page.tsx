@@ -1,7 +1,7 @@
 import { memberPage } from "@/lib/auth/page";
 import { getAllMembers } from "@/lib/firebase/members";
 import { portalConfig } from "@/lib/portal/memberData";
-import { STAFF_ROLES, byRoleThenName } from "@/lib/models/Member";
+import { byRoleThenName, roleLabel, memberRank, RANK_GROUP } from "@/lib/models/Member";
 import { PageHeader } from "@/components/ui";
 import MemberDirectory from "@/components/MemberDirectory";
 
@@ -21,7 +21,7 @@ export default async function MembersPage() {
           rows={active.map((m) => ({
             uid: m.uid, name: m.name, photoUrl: m.photoUrl, teams: m.teams,
             meta: [m.major, m.major2].filter(Boolean).join(" & "),
-            role: STAFF_ROLES.includes(m.role) ? "Exec" : m.role === "lead" ? "Field team lead" : "",
+            role: roleLabel(m), title: m.title, group: RANK_GROUP[memberRank(m)],
           }))}
         />
       </div>

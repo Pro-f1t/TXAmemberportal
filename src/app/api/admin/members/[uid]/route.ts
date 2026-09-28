@@ -31,6 +31,17 @@ export const PATCH = staffRoute(async ({ member: actor, body, params }) => {
     if (target.role === "admin") throw new ApiError("Admins can't be demoted from here.");
     patch.role = role;
   }
+  // Director tier + title. Director needs exec/admin; demoting below exec clears it.
+  const roleAfter = patch.role ?? target.role;
+  const staffAfter = roleAfter === "exec" || roleAfter === "admin";
+  if ("director" in body && typeof body.director === "boolean" && body.director !== target.director) {
+    if (self) throw new ApiError("You can't change your own director status.");
+    if (body.director && !staffAfter) throw new ApiError("Only execs can be directors.");
+    patch.director = body.director;
+  }
+  if (!staffAfter && target.director) patch.director = false;
+  if ("title" in body) patch.title = str(body.title, 80).trim();
+
   if ("status" in body && body.status !== target.status) {
     if (!MEMBER_STATUSES.includes(body.status)) throw new ApiError("Unknown status.");
     if (self) throw new ApiError("You can't change your own membership status.");
@@ -38,7 +49,7 @@ export const PATCH = staffRoute(async ({ member: actor, body, params }) => {
   }
 
   await updateMember(target.uid, patch);
-  const what = [patch.role ? `role → ${patch.role}` : "", patch.status ? `status → ${patch.status}` : ""].filter(Boolean).join(", ") || "profile";
-  await recordAudit({ actorUid: actor.uid, actorName: actor.name, action: patch.role ? "member.role" : patch.status ? "member.status" : "member.update", target: target.uid, detail: `${target.name}: ${what}` });
+  const what = [patch.role ? `role → ${patch.role}` : "", patch.director !== undefined ? `director → ${patch.director ? "yes" : "no"}` : "", patch.status ? `status → ${patch.status}` : ""].filter(Boolean).join(", ") || "profile";
+  await recordAudit({ actorUid: actor.uid, actorName: actor.name, action: patch.role || patch.director !== undefined ? "member.role" : patch.status ? "member.status" : "member.update", target: target.uid, detail: `${target.name}: ${what}` });
   return { ok: true };
 });

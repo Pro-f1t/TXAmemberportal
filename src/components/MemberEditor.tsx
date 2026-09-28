@@ -11,7 +11,7 @@ import { fmtDate, fmtBytes } from "@/lib/utils/format";
 type ResumeT = { id: string; fileName: string; url: string; size: number; uploadedAt: string; assignedTeams: Team[]; isDefault: boolean };
 type M = {
   uid: string; firstName: string; lastName: string; name: string; eid: string; email: string; phone: string; major: string; major2: string; gradDate: string; linkedin: string;
-  teams: Team[]; role: MemberRole; status: MemberStatus; resumes: ResumeT[];
+  teams: Team[]; role: MemberRole; director: boolean; title: string; status: MemberStatus; resumes: ResumeT[];
 };
 
 const STATUS_TONE = { active: "ok", pending: "warn", inactive: "muted" } as const;
@@ -19,7 +19,7 @@ const STATUS_TONE = { active: "ok", pending: "warn", inactive: "muted" } as cons
 /** Left card on member detail: every profile field editable by exec. */
 export default function MemberEditor({ member, actorIsAdmin, actorUid }: { member: M; actorIsAdmin: boolean; actorUid: string }) {
   const router = useRouter();
-  const [form, setForm] = useState({ firstName: member.firstName, lastName: member.lastName, eid: member.eid, phone: member.phone, major: member.major, major2: member.major2, gradDate: normaliseGrad(member.gradDate), linkedin: member.linkedin, teams: member.teams, role: member.role, status: member.status });
+  const [form, setForm] = useState({ firstName: member.firstName, lastName: member.lastName, eid: member.eid, phone: member.phone, major: member.major, major2: member.major2, gradDate: normaliseGrad(member.gradDate), linkedin: member.linkedin, teams: member.teams, role: member.role, director: member.director, title: member.title, status: member.status });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -78,14 +78,27 @@ export default function MemberEditor({ member, actorIsAdmin, actorUid }: { membe
         <div id="role" style={{ gridColumn: "1 / -1" }} className="flex flex-col gap-2">
           <span className="t-label">Role</span>
           <div className="flex flex-wrap gap-2">
-            <Chip on={form.role === "member"} onClick={() => !isSelf && set("role", "member")}>Member</Chip>
-            <Chip on={form.role === "lead"} onClick={() => !isSelf && set("role", "lead")}>Field team lead</Chip>
+            <Chip on={form.role === "member"} onClick={() => { if (!isSelf) { set("role", "member"); set("director", false); } }}>Member</Chip>
+            <Chip on={form.role === "lead"} onClick={() => { if (!isSelf) { set("role", "lead"); set("director", false); } }}>Field team lead</Chip>
             <Chip on={form.role === "exec"} onClick={() => !isSelf && set("role", "exec")}>Exec</Chip>
             {form.role === "admin" && <Chip on>Admin</Chip>}
           </div>
           {form.role === "exec" && !isSelf && <p className="m-0 text-[12px] text-muted">Execs can open the console, post, and manage members.</p>}
           {isSelf && <p className="m-0 text-[12px] text-muted">You can&apos;t change your own role.</p>}
         </div>
+        {(form.role === "exec" || form.role === "admin") && (
+          <>
+            <div style={{ gridColumn: "1 / -1" }} className="flex flex-col gap-2">
+              <span className="t-label">Tier</span>
+              <div className="flex flex-wrap gap-2">
+                <Chip on={!form.director} onClick={() => !isSelf && set("director", false)}>Exec</Chip>
+                <Chip on={form.director} onClick={() => !isSelf && set("director", true)}>Director</Chip>
+              </div>
+              <p className="m-0 text-[12px] text-muted">Directors are listed first with their own badge. Same console access as exec.</p>
+            </div>
+            <Field label="Title (optional)" span><input className="input" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Director of Operations" /></Field>
+          </>
+        )}
         <FieldGroup label="Membership">
           {(["active", "pending", "inactive"] as MemberStatus[]).map((s) => <Chip key={s} on={form.status === s} onClick={() => !isSelf && set("status", s)}>{s === "active" ? "Active" : s === "pending" ? "Pending" : "Inactive"}</Chip>)}
         </FieldGroup>

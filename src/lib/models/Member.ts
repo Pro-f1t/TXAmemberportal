@@ -35,14 +35,32 @@ export function isTeam(v: unknown): v is Team {
 export type MemberRole = "member" | "lead" | "exec" | "admin";
 export const MEMBER_ROLES: MemberRole[] = ["member", "lead", "exec", "admin"];
 
-// Roster order everywhere members are listed: exec (admin sits with exec),
-// then field team leads, then members; alphabetical within each group.
-// Rank 0 is kept free for directors once that tier exists.
-const ROLE_ORDER: Record<MemberRole, number> = { admin: 1, exec: 1, lead: 2, member: 3 };
+type Ranked = { role: MemberRole; name: string; director?: boolean };
 
-export function byRoleThenName(a: { role: MemberRole; name: string }, b: { role: MemberRole; name: string }): number {
-  return ROLE_ORDER[a.role] - ROLE_ORDER[b.role] || (a.name || "").localeCompare(b.name || "");
+export function isDirector(m: { role: MemberRole; director?: boolean }): boolean {
+  return !!m.director && (m.role === "exec" || m.role === "admin");
 }
+
+// Roster order everywhere members are listed: directors, exec (admin sits with
+// exec), field team leads, members; alphabetical within each group.
+const ROLE_ORDER: Record<MemberRole, number> = { admin: 1, exec: 1, lead: 2, member: 3 };
+export function memberRank(m: Ranked): number {
+  return isDirector(m) ? 0 : ROLE_ORDER[m.role];
+}
+
+export function byRoleThenName(a: Ranked, b: Ranked): number {
+  return memberRank(a) - memberRank(b) || (a.name || "").localeCompare(b.name || "");
+}
+
+/** "Director" / "Exec" / "Field team lead" / "" for plain members. */
+export function roleLabel(m: Ranked): string {
+  if (isDirector(m)) return "Director";
+  if (m.role === "exec" || m.role === "admin") return "Exec";
+  return m.role === "lead" ? "Field team lead" : "";
+}
+
+/** Directory group headings, in rank order. */
+export const RANK_GROUP = ["Directors", "Exec", "Field team leads", "Members"] as const;
 // "Staff" = everyone who can open the exec console. Keep in sync with proxy.ts
 // and Nav.tsx (middleware can't import from here cleanly).
 export const STAFF_ROLES: MemberRole[] = ["exec", "admin"];
@@ -77,6 +95,10 @@ export interface Member {
   firstName: string;
   lastName: string;
   role: MemberRole;
+  // Director: a display tier on top of exec (same permissions). Only meaningful
+  // when role is exec/admin; cleared when someone stops being exec.
+  director: boolean;
+  title: string; // optional, e.g. "Director of Operations"
   status: MemberStatus;
   teams: Team[];
   major: string;

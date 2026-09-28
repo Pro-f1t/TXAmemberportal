@@ -5,7 +5,7 @@ import { memberPage } from "@/lib/auth/page";
 import { getMember } from "@/lib/firebase/members";
 import { getAllEvents, getApplicationsForMember } from "@/lib/firebase/portal";
 import { splitEvents } from "@/lib/portal/memberData";
-import { STAFF_ROLES, teamShort } from "@/lib/models/Member";
+import { teamShort, roleLabel } from "@/lib/models/Member";
 import { EVENT_TYPE_LABEL } from "@/lib/models/Portal";
 import { Card, Eyebrow, Badge, Chip, Hairline, KeyValue, Pill, EventMini, Empty } from "@/components/ui";
 import { fmtMonthYear, fmtDate, initials } from "@/lib/utils/format";
@@ -27,7 +27,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
   const going = upcoming.filter((e) => e.rsvpUids.includes(uid));
   const attended = past.filter((e) => e.attendedUids.includes(uid)).length;
   const projects = apps.filter((a) => a.status === "placed" || a.status === "complete");
-  const role = STAFF_ROLES.includes(m.role) ? "Exec" : m.role === "lead" ? "Field team lead" : "Member";
+  const role = roleLabel(m) || "Member";
   const linkedin = m.linkedin ? (m.linkedin.startsWith("http") ? m.linkedin : `https://${m.linkedin}`) : "";
 
   return (
@@ -47,8 +47,9 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
           </span>
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <h2 className="t-h2">{m.name}</h2>
-            {role !== "Member" && <Badge tone="accent">{role}</Badge>}
+            {role !== "Member" && <Badge tone={role === "Director" ? "solid" : "accent"}>{role}</Badge>}
           </div>
+          {m.title && <p className="m-0 mt-1 text-[15px] font-medium text-accent">{m.title}</p>}
           <p className="m-0 mt-2 text-[16px] text-muted">
             {[[m.major, m.major2].filter(Boolean).join(" & "), `Member since ${fmtMonthYear(m.memberSince)}`].filter(Boolean).join(" · ")}
           </p>

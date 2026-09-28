@@ -1,6 +1,6 @@
 import { getAllMembers, getInvites } from "@/lib/firebase/members";
 import { getAllApplications, getAllEvents, getPortalConfig } from "@/lib/firebase/portal";
-import { STAFF_ROLES, teamShort, byRoleThenName } from "@/lib/models/Member";
+import { STAFF_ROLES, teamShort, byRoleThenName, isDirector } from "@/lib/models/Member";
 import { splitEvents } from "@/lib/portal/memberData";
 import { PageHeader, Pill } from "@/components/ui";
 import MembersList, { MemberRowData } from "@/components/MembersList";
@@ -19,13 +19,14 @@ export default async function AdminMembers({ searchParams }: { searchParams: Pro
     const flag: MemberRowData["flag"] =
       m.status === "pending" ? "pending"
       : m.status === "inactive" ? "inactive"
+      : isDirector(m) ? "director"
       : staff ? "exec"
       : m.resumes.length === 0 ? "noresume"
       : "active";
     return {
       uid: m.uid, name: m.name, email: m.email, eid: m.eid, role: m.role, teams: m.teams,
-      meta: [[m.major, m.major2].filter(Boolean).join(" & "), m.gradDate, staff ? "Exec" : "", m.teams.map(teamShort).join(", ")].filter(Boolean).join(" · "),
-      counts: staff ? `Exec · ${attended} event${attended === 1 ? "" : "s"}` : `${nApps} application${nApps === 1 ? "" : "s"} · ${attended} event${attended === 1 ? "" : "s"} · ${m.resumes.length} resume${m.resumes.length === 1 ? "" : "s"}`,
+      meta: [[m.major, m.major2].filter(Boolean).join(" & "), m.gradDate, m.title || (isDirector(m) ? "Director" : staff ? "Exec" : ""), m.teams.map(teamShort).join(", ")].filter(Boolean).join(" · "),
+      counts: staff ? `${isDirector(m) ? "Director" : "Exec"} · ${attended} event${attended === 1 ? "" : "s"}` : `${nApps} application${nApps === 1 ? "" : "s"} · ${attended} event${attended === 1 ? "" : "s"} · ${m.resumes.length} resume${m.resumes.length === 1 ? "" : "s"}`,
       flag,
     };
   });

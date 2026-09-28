@@ -176,6 +176,8 @@ button.chip:hover, .chip-on { background: var(--color-accent); color: var(--colo
 .badge-accent { color: var(--color-accent); background: rgba(96,165,250,0.15); }
 /* Violet badge (GM events). */
 .badge-violet { color: #c4b5fd; background: rgba(167,139,250,0.16); }
+/* Solid accent badge (Director — one step above the tinted Exec badge). */
+.badge-solid { color: var(--color-ink); background: var(--color-accent); }
 .badge { white-space: nowrap; }
 
 /* Nested row inside a card (surface-2). */

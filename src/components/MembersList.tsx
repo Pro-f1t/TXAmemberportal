@@ -10,7 +10,7 @@ import SignupToggle from "@/components/SignupToggle";
 
 export type MemberRowData = {
   uid: string; name: string; email: string; eid: string; role: MemberRole; teams: Team[]; meta: string; counts: string;
-  flag: "active" | "pending" | "inactive" | "exec" | "noresume";
+  flag: "active" | "pending" | "inactive" | "director" | "exec" | "noresume";
 };
 type InviteData = { email: string; name: string; teams: Team[]; role: MemberRole };
 
@@ -18,6 +18,7 @@ const FLAG = {
   active: { tone: "ok", label: "Active" },
   pending: { tone: "warn", label: "Pending" },
   inactive: { tone: "muted", label: "Inactive" },
+  director: { tone: "solid", label: "Director" },
   exec: { tone: "accent", label: "Exec" },
   noresume: { tone: "danger", label: "No resume" },
 } as const;

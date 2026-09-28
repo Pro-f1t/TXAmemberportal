@@ -34,6 +34,8 @@ export function toMember(data: any): Member {
     firstName: data.firstName ?? first ?? "",
     lastName: data.lastName ?? rest.join(" "),
     role: MEMBER_ROLES.includes(data.role) ? (data.role as MemberRole) : "member",
+    director: data.director === true,
+    title: typeof data.title === "string" ? data.title : "",
     status: MEMBER_STATUSES.includes(data.status) ? (data.status as MemberStatus) : "pending",
     teams: (Array.isArray(data.teams) ? data.teams : []).filter(isTeam),
     major: data.major ?? "",
@@ -94,7 +96,7 @@ export async function createMember(m: Partial<Member> & { uid: string; email: st
 }
 
 export type MemberPatch = Partial<
-  Pick<Member, "name" | "firstName" | "lastName" | "role" | "status" | "teams" | "major" | "major2" | "gradDate" | "phone" | "eid" | "linkedin" | "photoUrl">
+  Pick<Member, "name" | "firstName" | "lastName" | "role" | "director" | "title" | "status" | "teams" | "major" | "major2" | "gradDate" | "phone" | "eid" | "linkedin" | "photoUrl">
 >;
 
 export async function updateMember(uid: string, patch: MemberPatch): Promise<void> {
