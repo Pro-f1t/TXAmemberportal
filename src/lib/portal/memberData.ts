@@ -3,7 +3,7 @@ import {
   Opportunity, isOpportunityLive, isPastDeadline,
   PortalEvent, Announcement, isAnnouncementLive, MemberApplication,
 } from "@/lib/models/Portal";
-import { getAllOpportunities, getAllEvents, getAllAnnouncements, getApplicationsForMember, getPortalConfig } from "@/lib/firebase/portal";
+import { getAllOpportunities, getAllEvents, getAllAnnouncements, getApplicationsForMember, getPortalConfig, getAllEmployers } from "@/lib/firebase/portal";
 import { eventArchived } from "@/lib/portal/eventTime";
 import { myCheckinEventIds } from "@/lib/firebase/checkins";
 
@@ -12,8 +12,12 @@ import { myCheckinEventIds } from "@/lib/firebase/checkins";
 // keeps visibility logic in one place.
 
 export async function visibleOpportunities(member: Member): Promise<Opportunity[]> {
-  const all = await getAllOpportunities();
-  return all.filter((o) => isOpportunityLive(o) && !isPastDeadline(o) && visibleTo(o.audienceTeams, member.teams));
+  const [all, employers] = await Promise.all([getAllOpportunities(), getAllEmployers()]);
+  const logo = new Map(employers.map((e) => [e.id, e.logoUrl]));
+  return all
+    .filter((o) => isOpportunityLive(o) && !isPastDeadline(o) && visibleTo(o.audienceTeams, member.teams))
+    // No image on the posting → the employer's saved default image.
+    .map((o) => (o.previewImageUrl ? o : { ...o, previewImageUrl: logo.get(o.employerId) ?? "" }));
 }
 
 export async function visibleEvents(member: Member): Promise<PortalEvent[]> {

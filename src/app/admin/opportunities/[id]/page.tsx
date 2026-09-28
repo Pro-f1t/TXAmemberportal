@@ -27,7 +27,7 @@ export default async function PostingPage({ params, searchParams }: { params: Pr
           : null
       }
       defaultEmployerId={employer ?? ""}
-      employers={employers.map((e) => ({ id: e.id, name: e.name, teams: e.teams }))}
+      employers={employers.map((e) => ({ id: e.id, name: e.name, teams: e.teams, logoUrl: e.logoUrl }))}
       applicantCount={apps.length}
     />
   );

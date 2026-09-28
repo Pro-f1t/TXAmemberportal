@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { memberPage } from "@/lib/auth/page";
 import { getOpportunity, getApplicationsForMember, getEmployer } from "@/lib/firebase/portal";
-import { isOpportunityLive, isPastDeadline, closesSoon, APPLICATION_STATUS_LABEL } from "@/lib/models/Portal";
+import { isOpportunityLive, isPastDeadline, closesSoon, APPLICATION_STATUS_LABEL, POSTING_IMAGE_ASPECT } from "@/lib/models/Portal";
 import { teamShort, visibleTo, resumeForTeam } from "@/lib/models/Member";
 import { isStaff } from "@/lib/auth/guard";
 import { Card, Eyebrow, Badge, Chip, ArtImage, Hairline, Pill, RichText } from "@/components/ui";
@@ -57,9 +57,9 @@ export default async function OpportunityPage({ params }: { params: Promise<{ id
               <span className="flex flex-wrap gap-2">{opp.teams.map((t) => <Chip key={t}>{teamShort(t)}</Chip>)}</span>
             </Prop>
             <Prop label="Commitment"><span className="text-[15px] font-medium">{opp.commitment || "—"}</span></Prop>
-            {opp.previewImageUrl && (
+            {(opp.previewImageUrl || employer?.logoUrl) && (
               <Prop label="Preview">
-                <ArtImage src={opp.previewImageUrl} alt={opp.employerName} className="rounded-2xl" style={{ width: 220, height: 120 }} />
+                <ArtImage src={opp.previewImageUrl || employer?.logoUrl} alt={opp.employerName} className="rounded-2xl" style={{ width: 300, maxWidth: "100%", aspectRatio: POSTING_IMAGE_ASPECT }} />
               </Prop>
             )}
           </div>

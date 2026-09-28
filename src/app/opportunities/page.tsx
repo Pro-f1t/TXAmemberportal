@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { memberPage } from "@/lib/auth/page";
 import { visibleOpportunities, memberApplications, portalConfig } from "@/lib/portal/memberData";
-import { closesSoon } from "@/lib/models/Portal";
+import { closesSoon, POSTING_IMAGE_ASPECT } from "@/lib/models/Portal";
 import { teamShort } from "@/lib/models/Member";
 import { PageHeader, Pill, Badge, Chip, ArtImage, ArrowCircle, Empty } from "@/components/ui";
 import { fmtDate } from "@/lib/utils/format";
@@ -47,7 +47,7 @@ export default async function OpportunitiesPage({ searchParams }: { searchParams
               const soon = closesSoon(o);
               return (
                 <Link key={o.id} href={`/opportunities/${o.id}`} className="card flex min-w-0 flex-col gap-3.5 transition-colors" style={{ padding: 20 }}>
-                  <ArtImage src={o.previewImageUrl} seed={i} alt={o.employerName} className="w-full rounded-2xl" style={{ height: 120 }} />
+                  <ArtImage src={o.previewImageUrl} seed={i} alt={o.employerName} className="w-full rounded-2xl" style={{ aspectRatio: POSTING_IMAGE_ASPECT }} />
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <Chip size="lg">{o.teams[0] ? teamShort(o.teams[0]) : "All teams"}</Chip>
                     <span className="flex flex-wrap items-center gap-2">

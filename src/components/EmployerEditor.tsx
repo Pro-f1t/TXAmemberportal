@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { api } from "@/lib/utils/api";
 import { uploadViaApi, shrinkImage } from "@/lib/firebase/upload";
 import { TEAMS, teamShort, Team } from "@/lib/models/Member";
-import { EmployerStatus } from "@/lib/models/Portal";
+import { EmployerStatus, POSTING_IMAGE_ASPECT, POSTING_IMAGE_SIZE } from "@/lib/models/Portal";
 import { Badge, Chip, Eyebrow, Field, Hairline, Pill, Row, RowText } from "@/components/ui";
 
 export type EmployerForm = { id: string; name: string; contact: string; email: string; location: string; website: string; teams: Team[]; logoUrl: string; status: EmployerStatus };
@@ -44,7 +44,7 @@ export default function EmployerEditor({ uid, employer, postings }: { uid: strin
     setError(null);
     try {
       // SVGs pass through untouched; raster logos are downscaled like everything else.
-      const upload = file.type === "image/svg+xml" ? file : await shrinkImage(file, 1200);
+      const upload = file.type === "image/svg+xml" ? file : await shrinkImage(file, 1600);
       set("logoUrl", (await uploadViaApi("/api/admin/uploads/image", upload)).url);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed.");
@@ -60,14 +60,17 @@ export default function EmployerEditor({ uid, employer, postings }: { uid: strin
         <Badge tone={form.status === "active" ? "ok" : "muted"}>{form.status === "active" ? "Active" : "Inactive"}</Badge>
       </div>
       <div className="mt-5 flex flex-wrap items-start gap-5">
-        <button type="button" onClick={() => fileRef.current?.click()} className="relative block shrink-0 overflow-hidden rounded-[20px]" style={{ width: 120, height: 120, background: "var(--color-surface-2)" }} title="Upload logo" disabled={busy}>
-          {form.logoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={form.logoUrl} alt={form.name} className="h-full w-full object-contain p-3" />
-          ) : (
-            <span className="flex h-full w-full items-center justify-center text-[12px] text-muted">Drop logo</span>
-          )}
-        </button>
+        <div className="flex shrink-0 flex-col gap-2" style={{ width: 300, maxWidth: "100%" }}>
+          <button type="button" onClick={() => fileRef.current?.click()} className="relative block w-full overflow-hidden rounded-[20px]" style={{ aspectRatio: POSTING_IMAGE_ASPECT, background: "var(--color-surface-2)" }} title={`Upload a ${POSTING_IMAGE_SIZE} image`} disabled={busy}>
+            {form.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={form.logoUrl} alt={form.name} className="h-full w-full object-cover" />
+            ) : (
+              <span className="flex h-full w-full items-center justify-center px-4 text-center text-[12px] text-muted">Upload default image</span>
+            )}
+          </button>
+          <span className="text-[12px] text-muted">Default posting image · {POSTING_IMAGE_SIZE}. Used on this employer&apos;s postings unless a posting has its own.</span>
+        </div>
         <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" className="hidden" onChange={(e) => onLogo(e.target.files?.[0])} />
         <div className="grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", flex: "1 1 260px" }}>
           <Field label="Employer name" span><input className="input" value={form.name} onChange={(e) => set("name", e.target.value)} /></Field>

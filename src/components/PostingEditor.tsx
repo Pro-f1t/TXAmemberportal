@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { api } from "@/lib/utils/api";
 import { uploadViaApi, shrinkImage } from "@/lib/firebase/upload";
 import { TEAMS, teamShort, Team } from "@/lib/models/Member";
-import { OpportunityStatus, OPPORTUNITY_STATUS_LABEL, PostingQuestion, MAX_QUESTIONS } from "@/lib/models/Portal";
+import { OpportunityStatus, OPPORTUNITY_STATUS_LABEL, PostingQuestion, MAX_QUESTIONS, POSTING_IMAGE_ASPECT, POSTING_IMAGE_SIZE } from "@/lib/models/Portal";
 import { Badge, Chip, Hairline, Pill, ArtImage } from "@/components/ui";
 import { fmtDate, relativeTime } from "@/lib/utils/format";
 import DatePicker from "@/components/DatePicker";
@@ -29,7 +29,7 @@ const STATUS_TONE: Record<OpportunityStatus, "ok" | "warn" | "accent" | "muted">
 export default function PostingEditor({
   uid, posting, employers, applicantCount, defaultEmployerId,
 }: {
-  uid: string; posting: PostingForm | null; employers: { id: string; name: string; teams: Team[] }[]; applicantCount: number; defaultEmployerId: string;
+  uid: string; posting: PostingForm | null; employers: { id: string; name: string; teams: Team[]; logoUrl: string }[]; applicantCount: number; defaultEmployerId: string;
 }) {
   const router = useRouter();
   const [form, setForm] = useState<PostingForm>(posting ?? { ...BLANK, employerId: defaultEmployerId });
@@ -142,15 +142,21 @@ export default function PostingEditor({
           <input className="input" style={{ width: 260, borderRadius: 12, padding: "8px 14px" }} placeholder="10 hrs/wk · Fall 2026" value={form.commitment} onChange={(e) => set("commitment", e.target.value)} />
         </Prop>
         <Prop label="Preview image" align="start">
-          <button type="button" onClick={() => fileRef.current?.click()} className="relative block overflow-hidden rounded-2xl" style={{ width: 220, height: 120 }} title="Upload the employer logo or a project photo" disabled={busy}>
-            {form.previewImageUrl ? (
-              <ArtImage src={form.previewImageUrl} alt="Preview" className="h-full w-full" />
-            ) : (
-              <span className="flex h-full w-full items-center justify-center px-4 text-center text-[12px] text-muted" style={{ background: "var(--color-surface-2)" }}>Drop the employer logo or a project photo</span>
-            )}
-          </button>
+          <span className="flex flex-col gap-2">
+            <button type="button" onClick={() => fileRef.current?.click()} className="relative block overflow-hidden rounded-2xl" style={{ width: 300, maxWidth: "100%", aspectRatio: POSTING_IMAGE_ASPECT }} title={`Upload a ${POSTING_IMAGE_SIZE} image`} disabled={busy}>
+              {form.previewImageUrl || employer?.logoUrl ? (
+                <ArtImage src={form.previewImageUrl || employer?.logoUrl} alt="Preview" className="h-full w-full" />
+              ) : (
+                <span className="flex h-full w-full items-center justify-center px-4 text-center text-[12px] text-muted" style={{ background: "var(--color-surface-2)" }}>Upload a {POSTING_IMAGE_SIZE} image</span>
+              )}
+            </button>
+            <span className="text-[12px] text-muted">
+              {form.previewImageUrl
+                ? <>Custom image for this posting · <button type="button" onClick={() => set("previewImageUrl", "")} className="text-muted underline-offset-2 hover:text-white hover:underline">{employer?.logoUrl ? `Use ${employer.name}'s default` : "Remove"}</button></>
+                : employer?.logoUrl ? `Using ${employer.name}'s default image. Click to upload a different one.` : `No image yet. Save a default on the employer, or upload one here (${POSTING_IMAGE_SIZE}).`}
+            </span>
+          </span>
           <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={(e) => onImage(e.target.files?.[0])} />
-          {form.previewImageUrl && <button type="button" onClick={() => set("previewImageUrl", "")} className="text-[13px] text-muted hover:text-white">Remove</button>}
         </Prop>
         <Prop label="Placement">
           <Chip on={form.pinned} onClick={() => set("pinned", !form.pinned)}>{form.pinned ? "Pinned to top" : "Pin to top"}</Chip>

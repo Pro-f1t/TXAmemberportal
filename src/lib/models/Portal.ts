@@ -27,6 +27,10 @@ export const OPPORTUNITY_STATUS_LABEL: Record<OpportunityStatus, string> = {
   closed: "Closed",
 };
 
+// Posting / employer image shape — same 1270 × 368 tile the public website uses for partners.
+export const POSTING_IMAGE_ASPECT = "1270 / 368";
+export const POSTING_IMAGE_SIZE = "1270 × 368";
+
 export interface Opportunity {
   id: string;
   title: string;
