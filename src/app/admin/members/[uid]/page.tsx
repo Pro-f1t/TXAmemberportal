@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { staffPage } from "@/lib/auth/page";
 import { getMember } from "@/lib/firebase/members";
 import { getApplicationsForMember, getAllEvents } from "@/lib/firebase/portal";
+import { foldCheckins } from "@/lib/firebase/checkins";
 import { teamShort } from "@/lib/models/Member";
 import { splitEvents, attendanceState } from "@/lib/portal/memberData";
 import { PageHeader, Pill, Card, Eyebrow, Empty } from "@/components/ui";
@@ -16,6 +17,7 @@ export const dynamic = "force-dynamic";
 export default async function MemberDetail({ params }: { params: Promise<{ uid: string }> }) {
   const actor = await staffPage();
   const { uid } = await params;
+  await foldCheckins();
   const [m, apps, events] = await Promise.all([getMember(uid), getApplicationsForMember(uid), getAllEvents()]);
   if (!m) notFound();
   const published = events.filter((e) => e.status === "published");

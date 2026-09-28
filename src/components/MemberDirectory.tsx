@@ -58,7 +58,7 @@ export default function MemberDirectory({ rows }: { rows: DirectoryRow[] }) {
                     <span className="relative block w-full overflow-hidden" style={{ aspectRatio: "4 / 5", background: "var(--color-surface-2)" }}>
                       {r.photoUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={r.photoUrl} alt={r.name} className="absolute inset-0 h-full w-full object-cover object-top" />
+                        <img src={r.photoUrl} alt={r.name} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
                       ) : (
                         <span className="absolute inset-0 flex items-center justify-center text-[44px] font-semibold text-accent" style={{ letterSpacing: "-0.03em" }}>{initials(r.name)}</span>
                       )}

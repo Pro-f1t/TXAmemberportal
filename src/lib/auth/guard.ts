@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { adminAuth } from "@/lib/firebase/admin";
 import { getMember } from "@/lib/firebase/members";
@@ -8,7 +9,11 @@ import { STAFF_ROLES, Member } from "@/lib/models/Member";
  * Throws "Unauthorized" (→401) when there is no/expired/invalid session,
  * "Forbidden: …" (→403) on a role/status mismatch.
  */
-async function requireSession(): Promise<{ uid: string; member: Member }> {
+// Memoised per request: the console layout and the page both guard, and each
+// check is a network round-trip to Firebase Auth (revocation check) plus a
+// Firestore read. cache() makes the second call free. Scoped to one request,
+// so a role change is still seen on the very next navigation.
+const requireSession = cache(async function requireSession(): Promise<{ uid: string; member: Member }> {
   const store = await cookies();
   const sessionCookie = store.get("session")?.value;
   if (!sessionCookie) throw new Error("Unauthorized");
@@ -24,7 +29,7 @@ async function requireSession(): Promise<{ uid: string; member: Member }> {
   const member = await getMember(uid);
   if (!member) throw new Error("Unauthorized");
   return { uid, member };
-}
+});
 
 /** Any signed-in account, regardless of membership status. */
 export async function requireUser() {

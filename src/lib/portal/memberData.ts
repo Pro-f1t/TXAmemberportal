@@ -5,6 +5,7 @@ import {
 } from "@/lib/models/Portal";
 import { getAllOpportunities, getAllEvents, getAllAnnouncements, getApplicationsForMember, getPortalConfig } from "@/lib/firebase/portal";
 import { eventArchived } from "@/lib/portal/eventTime";
+import { myCheckinEventIds } from "@/lib/firebase/checkins";
 
 // Everything a member can see, resolved server-side. The collections are small
 // (tens of docs) so reading them whole and filtering in memory is simplest and
@@ -16,8 +17,11 @@ export async function visibleOpportunities(member: Member): Promise<Opportunity[
 }
 
 export async function visibleEvents(member: Member): Promise<PortalEvent[]> {
-  const all = await getAllEvents();
-  return all.filter((e) => e.status === "published" && visibleTo(e.audienceTeams, member.teams));
+  const [all, mine] = await Promise.all([getAllEvents(), myCheckinEventIds(member.uid)]);
+  return all
+    .filter((e) => e.status === "published" && visibleTo(e.audienceTeams, member.teams))
+    // A QR check-in may not be merged onto the event yet; count it for this member now.
+    .map((e) => (mine.has(e.id) && !e.attendedUids.includes(member.uid) ? { ...e, attendedUids: [...e.attendedUids, member.uid] } : e));
 }
 
 export async function visibleAnnouncements(member: Member): Promise<Announcement[]> {

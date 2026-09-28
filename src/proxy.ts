@@ -33,6 +33,9 @@ export function proxy(request: NextRequest) {
   return NextResponse.next();
 }
 
+// /c/* (QR scan), /checkin/* and /live/* are deliberately NOT matched: a scan from a
+// signed-out phone must reach /c/ to get its pass cookie before any login redirect,
+// and /checkin + /live do their own auth. Don't add them here.
 export const config = {
   matcher: [
     "/",

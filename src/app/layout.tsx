@@ -3,6 +3,7 @@ import { Syne } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import HideOn from "@/components/HideOn";
 import ScrollToTop from "@/components/ScrollToTop";
 
 const syne = Syne({
@@ -24,7 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ScrollToTop />
         <Nav />
         <main>{children}</main>
-        <Footer />
+        <HideOn prefix="/live"><Footer /></HideOn>
       </body>
     </html>
   );

@@ -24,6 +24,8 @@ const VERB: Record<string, string> = {
   "attendance.attended": "marked attended",
   "attendance.excused": "marked excused",
   "attendance.unattended": "cleared attendance",
+  "attendance.backup.arm": "armed the backup check-in code",
+  "attendance.backup.disarm": "disarmed the backup check-in code",
   "announcement.live": "posted an announcement",
   "announcement.draft": "saved an announcement draft",
   "announcement.scheduled": "scheduled an announcement",

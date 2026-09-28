@@ -2,6 +2,7 @@ import Link from "next/link";
 import { eventTimeRange } from "@/lib/portal/eventTime";
 import { notFound } from "next/navigation";
 import { getEvent } from "@/lib/firebase/portal";
+import { foldCheckins } from "@/lib/firebase/checkins";
 import { getAllMembers } from "@/lib/firebase/members";
 import { teamShort, STAFF_ROLES } from "@/lib/models/Member";
 import { PageHeader, Pill, Card, Eyebrow } from "@/components/ui";
@@ -12,6 +13,7 @@ export const dynamic = "force-dynamic";
 
 export default async function EventAttendancePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  await foldCheckins(id);
   const [event, members] = await Promise.all([getEvent(id), getAllMembers()]);
   if (!event) notFound();
   const eligible = members.filter((m) => m.status === "active" || STAFF_ROLES.includes(m.role));

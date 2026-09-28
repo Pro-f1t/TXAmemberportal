@@ -2,6 +2,7 @@ import { getAllMembers, getInvites } from "@/lib/firebase/members";
 import { getAllApplications, getAllEvents, getPortalConfig } from "@/lib/firebase/portal";
 import { STAFF_ROLES, teamShort, byRoleThenName, isDirector } from "@/lib/models/Member";
 import { splitEvents } from "@/lib/portal/memberData";
+import { foldCheckins } from "@/lib/firebase/checkins";
 import { PageHeader, Pill } from "@/components/ui";
 import MembersList, { MemberRowData } from "@/components/MembersList";
 
@@ -9,6 +10,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminMembers({ searchParams }: { searchParams: Promise<{ team?: string; invite?: string }> }) {
   const { team, invite } = await searchParams;
+  await foldCheckins();
   const [members, invites, apps, events, config] = await Promise.all([getAllMembers(), getInvites(), getAllApplications(), getAllEvents(), getPortalConfig()]);
   const { past } = splitEvents(events.filter((e) => e.status === "published" && e.countsForAttendance));
 

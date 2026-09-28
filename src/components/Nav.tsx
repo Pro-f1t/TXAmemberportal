@@ -88,13 +88,18 @@ export default function Nav() {
   const inConsole = pathname.startsWith("/admin");
   const displayName = me?.name && me.name !== "NA" ? me.name : "Account";
 
+  // Attendance lives in the console's top bar (Jamie's call), not the side rail.
   const links = inConsole
     ? [
         { href: "/admin", label: "Console", exact: false },
+        { href: "/admin/attendance", label: "Attendance", exact: false },
         { href: "/", label: "Member view", exact: true },
       ]
     : MEMBER_LINKS;
-  const isActive = (l: { href: string; exact?: boolean }) => (l.exact ? pathname === l.href : pathname.startsWith(l.href));
+  const isActive = (l: { href: string; exact?: boolean }) =>
+    l.exact ? pathname === l.href
+    : l.href === "/admin" ? pathname.startsWith("/admin") && !pathname.startsWith("/admin/attendance")
+    : pathname.startsWith(l.href);
 
   const handleSignOut = async () => {
     try { await signOutClient(); } catch {}
@@ -105,6 +110,9 @@ export default function Nav() {
     router.push("/auth/login");
     router.refresh();
   };
+
+  // The projector check-in screen is full-screen: no nav.
+  if (pathname.startsWith("/live")) return null;
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center">

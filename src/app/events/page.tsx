@@ -57,8 +57,10 @@ export default async function EventsPage() {
                     description={e.description}
                     badges={[{ label: EVENT_TYPE_LABEL[e.type], tone: TYPE_TONE[e.type] }, ...(e.pinned ? [{ label: "Pinned", tone: "accent" as Tone }] : [])]}
                     action={
-                      eventEnded(e)
-                        ? <Badge tone={e.attendedUids.includes(member.uid) ? "ok" : "muted"}>{e.attendedUids.includes(member.uid) ? "Attended" : "Ended"}</Badge>
+                      e.attendedUids.includes(member.uid)
+                        ? <Badge tone="ok">{eventEnded(e) ? "Attended" : "Checked in"}</Badge>
+                        : eventEnded(e)
+                        ? <Badge tone="muted">Ended</Badge>
                         : e.rsvpUrl ? <a href={e.rsvpUrl} target="_blank" rel="noreferrer" className="pill pill-blue pill-sm">RSVP ↗</a> : <RsvpButton eventId={e.id} going={going} disabled={full} />
                     }
                   />
