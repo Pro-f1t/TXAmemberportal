@@ -5,6 +5,7 @@ import { useState } from "react";
 import { api } from "@/lib/utils/api";
 import { PortalConfig } from "@/lib/models/Portal";
 import { Card, Eyebrow, Field, Pill } from "@/components/ui";
+import SignupToggle from "@/components/SignupToggle";
 
 export default function SettingsForm({ config, feedUrl }: { config: PortalConfig; feedUrl: string }) {
   const router = useRouter();
@@ -19,7 +20,8 @@ export default function SettingsForm({ config, feedUrl }: { config: PortalConfig
     setError(null);
     setSaved(false);
     try {
-      await api("/api/admin/config", "PATCH", form);
+      // Only this card's fields. Sign-up approval saves itself instantly (SignupToggle).
+      await api("/api/admin/config", "PATCH", { season: form.season, week: form.week, calendarUrl: form.calendarUrl });
       setSaved(true);
       router.refresh();
     } catch (e) {
@@ -31,6 +33,14 @@ export default function SettingsForm({ config, feedUrl }: { config: PortalConfig
 
   return (
     <div className="grid items-start gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+      <Card>
+        <Eyebrow>Sign-ups</Eyebrow>
+        <p className="m-0 mt-2 text-[15px] text-muted">
+          Turn approval off during a GM so everyone in the room can sign in and get straight in. Changes save as soon as you click.
+        </p>
+        <div className="mt-4"><SignupToggle requireApproval={config.requireApproval} /></div>
+      </Card>
+
       <Card>
         <Eyebrow>Calendar</Eyebrow>
         <p className="m-0 mt-2 text-[15px] text-muted">

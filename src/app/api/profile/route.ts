@@ -25,7 +25,7 @@ export async function PATCH(request: Request) {
     if ("major2" in body) patch.major2 = str(body.major2, 120).trim();
     if ("gradDate" in body) patch.gradDate = str(body.gradDate, 40).trim();
     if ("photoUrl" in body) patch.photoUrl = str(body.photoUrl, 2000).trim();
-    if ("teams" in body) patch.teams = (Array.isArray(body.teams) ? body.teams : []).filter(isTeam);
+    // Field teams are exec-assigned (member detail in the console); members can't set their own.
     await updateMember(uid, patch);
     return NextResponse.json({ ok: true });
   } catch (error) {

@@ -4,17 +4,24 @@ import { PortalConfig } from "@/lib/models/Portal";
 import { recordAudit } from "@/lib/firebase/audit";
 import { str } from "@/lib/firebase/fs";
 
-/** Portal settings: season label, week, calendar link. */
+/** Portal settings: season label, week, calendar link, sign-up approval. */
 export const PATCH = staffRoute(async ({ member, body }) => {
   const patch: Partial<PortalConfig> = {};
   if ("season" in body) patch.season = str(body.season, 40).trim() || "Fall 2026";
   if ("week" in body) patch.week = Math.max(0, Math.min(52, Math.floor(Number(body.week)) || 0));
+  if ("requireApproval" in body) {
+    if (typeof body.requireApproval !== "boolean") throw new ApiError("requireApproval must be true or false.");
+    patch.requireApproval = body.requireApproval;
+  }
   if ("calendarUrl" in body) {
     const link = str(body.calendarUrl, 500).trim();
     if (link && !/^https?:\/\//.test(link)) throw new ApiError("Calendar link must start with http:// or https://");
     patch.calendarUrl = link;
   }
   await setPortalConfig(patch, member.uid);
-  await recordAudit({ actorUid: member.uid, actorName: member.name, action: "config.update", detail: Object.keys(patch).join(", ") });
+  const detail = "requireApproval" in patch
+    ? [patch.requireApproval ? "sign-up approval ON" : "sign-up approval OFF (open sign-up)", ...Object.keys(patch).filter((k) => k !== "requireApproval")].join(", ")
+    : Object.keys(patch).join(", ");
+  await recordAudit({ actorUid: member.uid, actorName: member.name, action: "config.update", detail });
   return { ok: true };
 });

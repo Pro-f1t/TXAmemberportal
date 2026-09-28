@@ -208,6 +208,9 @@ export interface PortalConfig {
   season: string; // "Fall 2026"
   week: number; // shown on the home hero
   calendarUrl: string; // optional external calendar link (else the ICS feed)
+  // true (default): new Google accounts are pending until an exec activates them.
+  // false ("open sign-up", e.g. during a GM): new and pending accounts go straight to active member.
+  requireApproval: boolean;
 }
 // There is no attendance requirement (Jamie, 2026-09-22): events attended is a plain counter.
-export const DEFAULT_CONFIG: PortalConfig = { season: "Fall 2026", week: 3, calendarUrl: "" };
+export const DEFAULT_CONFIG: PortalConfig = { season: "Fall 2026", week: 3, calendarUrl: "", requireApproval: true };

@@ -4,6 +4,7 @@ import { isOpportunityLive, closesSoon, isAnnouncementLive, ANNOUNCEMENT_LABEL_T
 import { splitEvents } from "@/lib/portal/memberData";
 import { PageHeader, Pill, Card, Eyebrow, Badge, StatTile, Row, RowText, EventMini, Empty } from "@/components/ui";
 import { fmtDate } from "@/lib/utils/format";
+import SignupToggle from "@/components/SignupToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +34,8 @@ export default async function AdminOverview() {
           </>
         }
       />
+
+      <SignupToggle requireApproval={config.requireApproval} variant="banner" />
 
       <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
         <StatTile surface={1} value={live.length} label="Live postings" />

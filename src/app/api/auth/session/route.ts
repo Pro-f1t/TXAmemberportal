@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { adminAuth } from "@/lib/firebase/admin";
-import { getMember, createMember, getInvite, deleteInvite } from "@/lib/firebase/members";
+import { getMember, createMember, getInvite, deleteInvite, updateMember } from "@/lib/firebase/members";
+import { getPortalConfig } from "@/lib/firebase/portal";
+import { recordAudit } from "@/lib/firebase/audit";
 
 // Any Google account may sign in. A brand-new account becomes a PENDING member
 // (sees /pending until an exec activates them) — unless an exec pre-approved
@@ -29,9 +31,17 @@ export async function POST(request: Request) {
 
     let role = "member";
     let status = "pending";
+    const { requireApproval } = await getPortalConfig();
     if (existing) {
       role = existing.role;
       status = existing.status;
+      // Open sign-up (approval off): anyone still pending is let in on their next sign-in.
+      // Inactive accounts stay inactive — that was an exec decision.
+      if (status === "pending" && !requireApproval) {
+        await updateMember(existing.uid, { status: "active" });
+        await recordAudit({ actorUid: existing.uid, actorName: existing.name, action: "member.status", target: existing.uid, detail: `${existing.name}: pending → active (open sign-up)` });
+        status = "active";
+      }
     } else {
       const email = (record.email || "").toLowerCase();
       const invite = email ? await getInvite(email) : null;
@@ -42,12 +52,16 @@ export async function POST(request: Request) {
         email: email || "NA",
         name,
         role: bootstrap ? "exec" : invite?.role ?? "member",
-        status: bootstrap || invite ? "active" : "pending",
+        status: bootstrap || invite || !requireApproval ? "active" : "pending",
         teams: invite?.teams ?? [],
         photoUrl: "", // never the Google avatar — members upload a real headshot (initials until then)
         memberSince: new Date(),
         createdAt: new Date(),
       });
+      if (!requireApproval && !bootstrap && !invite) {
+        status = "active";
+        await recordAudit({ actorUid: record.uid, actorName: name, action: "member.join", target: record.uid, detail: `${name} joined via open sign-up` });
+      }
       if (bootstrap) {
         role = "exec";
         status = "active";

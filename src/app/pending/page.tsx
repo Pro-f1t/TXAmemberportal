@@ -1,5 +1,8 @@
 import { redirect } from "next/navigation";
 import { requireUser, isStaff } from "@/lib/auth/guard";
+import { getPortalConfig } from "@/lib/firebase/portal";
+import { updateMember } from "@/lib/firebase/members";
+import { recordAudit } from "@/lib/firebase/audit";
 import { CONTACT_EMAIL } from "@/data/site";
 import SignOutButton from "@/components/SignOutButton";
 
@@ -14,6 +17,13 @@ export default async function PendingPage() {
     redirect("/auth/login?next=/");
   }
   if (member.status === "active" || isStaff(member)) redirect("/");
+
+  // Open sign-up: someone who signed in before approval was switched off gets in on reload.
+  if (member.status === "pending" && !(await getPortalConfig()).requireApproval) {
+    await updateMember(member.uid, { status: "active" });
+    await recordAudit({ actorUid: member.uid, actorName: member.name, action: "member.status", target: member.uid, detail: `${member.name}: pending → active (open sign-up)` });
+    redirect("/");
+  }
 
   const inactive = member.status === "inactive";
   return (

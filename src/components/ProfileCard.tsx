@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { api } from "@/lib/utils/api";
 import { uploadViaApi, shrinkImage } from "@/lib/firebase/upload";
-import { TEAMS, teamShort, Team } from "@/lib/models/Member";
+import { teamShort, Team } from "@/lib/models/Member";
 import { MAJORS, GRAD_YEARS, normaliseGrad } from "@/data/majors";
 import { Chip, Hairline, KeyValue, Pill, Field } from "@/components/ui";
 import { CameraIcon } from "@/components/Icons";
@@ -19,7 +19,7 @@ type M = {
 export default function ProfileCard({ member }: { member: M }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({ firstName: member.firstName, lastName: member.lastName, phone: member.phone, eid: member.eid, linkedin: member.linkedin, major: member.major, major2: member.major2, gradDate: normaliseGrad(member.gradDate), teams: member.teams });
+  const [form, setForm] = useState({ firstName: member.firstName, lastName: member.lastName, phone: member.phone, eid: member.eid, linkedin: member.linkedin, major: member.major, major2: member.major2, gradDate: normaliseGrad(member.gradDate) });
   const [doubleMajor, setDoubleMajor] = useState(!!member.major2);
   const [photo, setPhoto] = useState(member.photoUrl);
   const [busy, setBusy] = useState(false);
@@ -27,7 +27,6 @@ export default function ProfileCard({ member }: { member: M }) {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
-  const toggleTeam = (t: Team) => setForm((f) => ({ ...f, teams: f.teams.includes(t) ? f.teams.filter((x) => x !== t) : [...f.teams, t] }));
 
   const save = async () => {
     setBusy(true);
@@ -89,7 +88,7 @@ export default function ProfileCard({ member }: { member: M }) {
         </button>
         <div className="min-w-0">
           <p className="m-0 text-[14px] font-semibold">{photo ? "Your headshot" : "Add a headshot"}</p>
-          <p className="m-0 mt-1 text-[12px] text-muted">Professional headshot preferred. Portrait crop, shoulders up.</p>
+          <p className="m-0 mt-1 text-[12px] text-muted">Professional headshot preferred.</p>
           <button type="button" onClick={() => fileRef.current?.click()} disabled={busy} className="pill pill-ghost pill-xs mt-2.5">
             {busy ? "Uploading…" : photo ? "Change photo" : "Upload headshot"}
           </button>
@@ -105,7 +104,7 @@ export default function ProfileCard({ member }: { member: M }) {
       {!editing ? (
         <>
           <div className="mt-5 flex flex-wrap gap-2">
-            {member.teams.length === 0 && <span className="text-[13px] text-muted">No field teams yet</span>}
+            {member.teams.length === 0 && <span className="text-[13px] text-muted">No field team yet. Exec assigns these.</span>}
             {member.teams.map((t) => <Chip key={t} on size="lg">{teamShort(t)}</Chip>)}
           </div>
           <Hairline className="my-6" />
@@ -150,10 +149,7 @@ export default function ProfileCard({ member }: { member: M }) {
             <Field label="UT EID"><input className="input" value={form.eid} onChange={(e) => set("eid", e.target.value)} placeholder="ab12345" /></Field>
             <Field label="LinkedIn"><input className="input" value={form.linkedin} onChange={(e) => set("linkedin", e.target.value)} placeholder="linkedin.com/in/you" /></Field>
           </div>
-          <p className="t-label mt-4">Field teams</p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {TEAMS.map((t) => <Chip key={t} on={form.teams.includes(t)} onClick={() => toggleTeam(t)}>{teamShort(t)}</Chip>)}
-          </div>
+          <p className="m-0 mt-4 text-[12px] text-muted">Field teams are assigned by exec.</p>
           <div className="mt-6 flex flex-wrap gap-2.5">
             <Pill tone="blue" onClick={save} disabled={busy}>{busy ? "Saving…" : "Save changes"}</Pill>
             <Pill onClick={() => { setEditing(false); setError(null); }} disabled={busy}>Cancel</Pill>

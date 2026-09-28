@@ -322,5 +322,6 @@ export async function getPortalConfig(): Promise<PortalConfig> {
     season: d.season ?? DEFAULT_CONFIG.season,
     week: typeof d.week === "number" ? d.week : DEFAULT_CONFIG.week,
     calendarUrl: d.calendarUrl ?? "",
+    requireApproval: d.requireApproval !== false,
   };
 }
