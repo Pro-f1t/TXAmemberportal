@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { recordAudit } from "@/lib/firebase/audit";
 import { staffRoute } from "@/lib/admin/route";
 import { getAllMembers } from "@/lib/firebase/members";
 import { TEAMS, Team, teamShort, resumeForTeam, STAFF_ROLES } from "@/lib/models/Member";
@@ -8,7 +9,8 @@ import { fmtDateYear } from "@/lib/utils/format";
 export const dynamic = "force-dynamic";
 
 /** The resume book as CSV: name, contact, teams, and the resolved resume link. */
-export const GET = staffRoute(async ({ request }) => {
+export const GET = staffRoute(async ({ request, member }) => {
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: "export.resumes", detail: "Resume book CSV" });
   const url = new URL(request.url);
   const teamParam = url.searchParams.get("team");
   const team = TEAMS.includes(teamParam as Team) ? (teamParam as Team) : null;

@@ -59,8 +59,8 @@ export function roleLabel(m: Ranked): string {
   return m.role === "lead" ? "Field team lead" : "";
 }
 
-/** Directory group headings, in rank order. */
-export const RANK_GROUP = ["Directors", "Exec", "Field team leads", "Members"] as const;
+/** Directory group headings, by rank. Directors share the Exec section (listed first in it). */
+export const RANK_GROUP = ["Exec", "Exec", "Field team leads", "Members"] as const;
 // "Staff" = everyone who can open the exec console. Keep in sync with proxy.ts
 // and Nav.tsx (middleware can't import from here cleanly).
 export const STAFF_ROLES: MemberRole[] = ["exec", "admin"];

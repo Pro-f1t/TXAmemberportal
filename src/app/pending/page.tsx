@@ -21,7 +21,7 @@ export default async function PendingPage() {
   // Open sign-up: someone who signed in before approval was switched off gets in on reload.
   if (member.status === "pending" && !(await getPortalConfig()).requireApproval) {
     await updateMember(member.uid, { status: "active" });
-    await recordAudit({ actorUid: member.uid, actorName: member.name, action: "member.status", target: member.uid, detail: `${member.name}: pending → active (open sign-up)` });
+    await recordAudit({ source: "member", actorUid: member.uid, actorName: member.name, action: "member.status", target: member.uid, detail: `${member.name}: pending → active (open sign-up)` });
     redirect("/");
   }
 

@@ -16,6 +16,6 @@ export const POST = staffRoute(async ({ member, body, params }) => {
   const action = body.action as AttendanceAction;
   if (!ACTIONS.includes(action)) throw new ApiError("Unknown action.");
   await setAttendance(event.id, uid, action);
-  await recordAudit({ actorUid: member.uid, actorName: member.name, action: `attendance.${action}`, target: event.id, detail: `${target.name} · ${event.title}` });
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: `attendance.${action}`, target: event.id, detail: `${target.name} · ${event.title}` });
   return { ok: true };
 });

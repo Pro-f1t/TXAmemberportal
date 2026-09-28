@@ -46,7 +46,7 @@ export const POST = staffRoute(async ({ member, body }) => {
   if (!input.title) throw new ApiError("Give the event a title.");
   if (!input.startsAt) throw new ApiError("Pick a date.");
   const id = await upsertEvent(null, { status: "draft", audienceTeams: [], countsForAttendance: true, pinned: false, rsvpUrl: "", type: "workshop", timeLabel: "", endTimeLabel: "", location: "", capacity: null, description: "", ...input });
-  await recordAudit({ actorUid: member.uid, actorName: member.name, action: "event.create", target: id, detail: input.title });
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: "event.create", target: id, detail: input.title });
   return { ok: true, id };
 });
 
@@ -57,6 +57,6 @@ export const PATCH = staffRoute(async ({ member, body }) => {
   const input = parse(body);
   await upsertEvent(id, input);
   const action = input.status && input.status !== prev.status ? `event.${input.status}` : "event.update";
-  await recordAudit({ actorUid: member.uid, actorName: member.name, action, target: id, detail: input.title ?? prev.title });
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action, target: id, detail: input.title ?? prev.title });
   return { ok: true, id };
 });

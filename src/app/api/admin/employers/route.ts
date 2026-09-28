@@ -23,7 +23,7 @@ export const POST = staffRoute(async ({ member, body }) => {
   const input = parse(body);
   if (!input.name) throw new ApiError("Give the employer a name.");
   const id = await upsertEmployer(null, { status: "active", teams: [], contact: "", email: "", location: "", website: "", logoUrl: "", ...input });
-  await recordAudit({ actorUid: member.uid, actorName: member.name, action: "employer.create", target: id, detail: input.name });
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: "employer.create", target: id, detail: input.name });
   return { ok: true, id };
 });
 
@@ -33,6 +33,6 @@ export const PATCH = staffRoute(async ({ member, body }) => {
   if (!prev) throw new ApiError("Employer not found.", 404);
   const input = parse(body);
   await upsertEmployer(id, input);
-  await recordAudit({ actorUid: member.uid, actorName: member.name, action: "employer.update", target: id, detail: input.name ?? prev.name });
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: "employer.update", target: id, detail: input.name ?? prev.name });
   return { ok: true, id };
 });

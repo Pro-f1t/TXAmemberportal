@@ -16,6 +16,7 @@ const GROUPS = [
     { href: "/admin/teams", label: "Field teams" },
     { href: "/admin/resumes", label: "Resume book" },
     { href: "/admin/employers", label: "Employers" },
+    { href: "/admin/activity", label: "Activity" },
     { href: "/admin/settings", label: "Settings" },
   ],
 ];

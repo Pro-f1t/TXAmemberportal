@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { recordAudit } from "@/lib/firebase/audit";
 import { staffRoute } from "@/lib/admin/route";
 import { getAllMembers } from "@/lib/firebase/members";
 import { getAllApplications, getAllEvents } from "@/lib/firebase/portal";
@@ -8,7 +9,8 @@ import { fmtDateYear } from "@/lib/utils/format";
 
 export const dynamic = "force-dynamic";
 
-export const GET = staffRoute(async () => {
+export const GET = staffRoute(async ({ member }) => {
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: "export.members", detail: "Member roster CSV" });
   const [members, apps, events] = await Promise.all([getAllMembers(), getAllApplications(), getAllEvents()]);
   const counting = events.filter((e) => e.status === "published" && e.countsForAttendance);
   const header = ["Name", "Email", "UT EID", "Phone", "Major", "Second major", "Graduation", "LinkedIn", "Role", "Status", "Teams", "Member since", "Applications", "Placed", "Events attended", "Resumes", "Default resume"];

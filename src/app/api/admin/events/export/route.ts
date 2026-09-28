@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { recordAudit } from "@/lib/firebase/audit";
 import { staffRoute } from "@/lib/admin/route";
 import { getAllEvents } from "@/lib/firebase/portal";
 import { getAllMembers } from "@/lib/firebase/members";
@@ -9,7 +10,8 @@ import { fmtDateYear } from "@/lib/utils/format";
 export const dynamic = "force-dynamic";
 
 /** Attendance matrix: one row per member, one column per event. */
-export const GET = staffRoute(async () => {
+export const GET = staffRoute(async ({ member }) => {
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: "export.events", detail: "Event attendance CSV" });
   const [events, members] = await Promise.all([getAllEvents(), getAllMembers()]);
   const published = events.filter((e) => e.status === "published");
   const header = ["Name", "Email", "Status", "Attended (counting)", ...published.map((e) => `${e.title} (${fmtDateYear(e.startsAt)} · ${EVENT_TYPE_LABEL[e.type]})`)];

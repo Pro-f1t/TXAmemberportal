@@ -49,7 +49,14 @@ export const PATCH = staffRoute(async ({ member: actor, body, params }) => {
   }
 
   await updateMember(target.uid, patch);
-  const what = [patch.role ? `role → ${patch.role}` : "", patch.director !== undefined ? `director → ${patch.director ? "yes" : "no"}` : "", patch.status ? `status → ${patch.status}` : ""].filter(Boolean).join(", ") || "profile";
-  await recordAudit({ actorUid: actor.uid, actorName: actor.name, action: patch.role || patch.director !== undefined ? "member.role" : patch.status ? "member.status" : "member.update", target: target.uid, detail: `${target.name}: ${what}` });
+  const teamsChanged = patch.teams !== undefined && patch.teams.join() !== target.teams.join();
+  const what = [
+    patch.role ? `role → ${patch.role}` : "",
+    patch.director !== undefined ? `director → ${patch.director ? "yes" : "no"}` : "",
+    patch.title !== undefined && patch.title !== target.title ? `title → ${patch.title || "none"}` : "",
+    teamsChanged ? `teams → ${patch.teams!.length ? patch.teams!.join(", ") : "none"}` : "",
+    patch.status ? `status → ${patch.status}` : "",
+  ].filter(Boolean).join(", ") || "profile details";
+  await recordAudit({ source: "console", actorUid: actor.uid, actorName: actor.name, action: patch.role || patch.director !== undefined ? "member.role" : patch.status ? "member.status" : "member.update", target: target.uid, detail: `${target.name}: ${what}` });
   return { ok: true };
 });

@@ -12,7 +12,7 @@ export const POST = staffRoute(async ({ member: actor, body }) => {
   const existing = (await getAllMembers()).find((m) => m.email.toLowerCase() === email);
   if (existing) throw new ApiError(`${existing.name} already has an account — open their profile to change teams or status.`);
   await upsertInvite({ email, name: str(body.name, 120).trim(), teams: (Array.isArray(body.teams) ? body.teams : []).filter(isTeam), role, invitedBy: actor.uid });
-  await recordAudit({ actorUid: actor.uid, actorName: actor.name, action: "member.invite", target: email, detail: role });
+  await recordAudit({ source: "console", actorUid: actor.uid, actorName: actor.name, action: "member.invite", target: email, detail: role });
   return { ok: true };
 });
 
@@ -20,6 +20,6 @@ export const DELETE = staffRoute(async ({ member: actor, body }) => {
   const email = str(body.email, 200).trim().toLowerCase();
   if (!email) throw new ApiError("Missing email.");
   await deleteInvite(email);
-  await recordAudit({ actorUid: actor.uid, actorName: actor.name, action: "member.uninvite", target: email });
+  await recordAudit({ source: "console", actorUid: actor.uid, actorName: actor.name, action: "member.uninvite", target: email });
   return { ok: true };
 });

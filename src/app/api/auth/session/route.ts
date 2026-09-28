@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       // Inactive accounts stay inactive — that was an exec decision.
       if (status === "pending" && !requireApproval) {
         await updateMember(existing.uid, { status: "active" });
-        await recordAudit({ actorUid: existing.uid, actorName: existing.name, action: "member.status", target: existing.uid, detail: `${existing.name}: pending → active (open sign-up)` });
+        await recordAudit({ source: "member", actorUid: existing.uid, actorName: existing.name, action: "member.status", target: existing.uid, detail: `${existing.name}: pending → active (open sign-up)` });
         status = "active";
       }
     } else {
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       });
       if (!requireApproval && !bootstrap && !invite) {
         status = "active";
-        await recordAudit({ actorUid: record.uid, actorName: name, action: "member.join", target: record.uid, detail: `${name} joined via open sign-up` });
+        await recordAudit({ source: "member", actorUid: record.uid, actorName: name, action: "member.join", target: record.uid, detail: `${name} joined via open sign-up` });
       }
       if (bootstrap) {
         role = "exec";

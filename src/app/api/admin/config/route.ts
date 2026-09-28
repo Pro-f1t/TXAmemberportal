@@ -22,6 +22,6 @@ export const PATCH = staffRoute(async ({ member, body }) => {
   const detail = "requireApproval" in patch
     ? [patch.requireApproval ? "sign-up approval ON" : "sign-up approval OFF (open sign-up)", ...Object.keys(patch).filter((k) => k !== "requireApproval")].join(", ")
     : Object.keys(patch).join(", ");
-  await recordAudit({ actorUid: member.uid, actorName: member.name, action: "config.update", detail });
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: "config.update", detail });
   return { ok: true };
 });

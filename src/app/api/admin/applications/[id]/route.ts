@@ -21,7 +21,7 @@ export const PATCH = staffRoute(async ({ member, body, params }) => {
     patch.joinLink = link;
   }
   await updateApplication(app.id, patch);
-  await recordAudit({
+  await recordAudit({ source: "console",
     actorUid: member.uid, actorName: member.name,
     action: patch.status ? `application.status.${patch.status}` : "application.nextstep",
     target: app.id, detail: `${app.userName} · ${app.opportunityTitle}`,

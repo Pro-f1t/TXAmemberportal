@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       submittedAt: new Date(),
       answers,
     });
-    await recordAudit({ actorUid: member.uid, actorName: member.name, action: "application.submit", target: id, detail: `${opp.title} · ${resume.fileName}` });
+    await recordAudit({ source: "member", actorUid: member.uid, actorName: member.name, action: "application.submit", target: id, detail: `${opp.title} · ${resume.fileName}` });
     return NextResponse.json({ ok: true, id });
   } catch (error) {
     return fail(error);
@@ -62,7 +62,7 @@ export async function PATCH(request: Request) {
     const action = body.action === "accept" ? "placed" : body.action === "decline" ? "declined" : null;
     if (!action) throw new Error("Unknown action.");
     await updateApplication(app.id, { status: action, nextStep: action === "placed" ? "Offer accepted" : "" });
-    await recordAudit({ actorUid: member.uid, actorName: member.name, action: `application.${body.action}`, target: app.id, detail: app.opportunityTitle });
+    await recordAudit({ source: "member", actorUid: member.uid, actorName: member.name, action: `application.${body.action}`, target: app.id, detail: app.opportunityTitle });
     return NextResponse.json({ ok: true });
   } catch (error) {
     return fail(error);

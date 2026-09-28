@@ -28,7 +28,7 @@ export const POST = staffRoute(async ({ member, body }) => {
   const input = parse(body);
   if (!input.title) throw new ApiError("Give it a title.");
   const id = await upsertAnnouncement(null, { status: "draft", label: "update", audienceTeams: [], emailMembers: false, publishAt: null, expiresAt: null, body: "", ...input }, { uid: member.uid, name: member.name });
-  await recordAudit({ actorUid: member.uid, actorName: member.name, action: `announcement.${input.status ?? "draft"}`, target: id, detail: input.title });
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: `announcement.${input.status ?? "draft"}`, target: id, detail: input.title });
   return { ok: true, id };
 });
 
@@ -37,6 +37,6 @@ export const PATCH = staffRoute(async ({ member, body }) => {
   if (!id) throw new ApiError("Missing id.");
   const input = parse(body);
   await upsertAnnouncement(id, input, { uid: member.uid, name: member.name });
-  await recordAudit({ actorUid: member.uid, actorName: member.name, action: `announcement.${input.status ?? "update"}`, target: id, detail: input.title });
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: `announcement.${input.status ?? "update"}`, target: id, detail: input.title });
   return { ok: true, id };
 });

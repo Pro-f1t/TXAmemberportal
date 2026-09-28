@@ -46,7 +46,7 @@ export const POST = staffRoute(async ({ member, body }) => {
   const input = await parse(body);
   if (!input.title) throw new ApiError("Give the posting a title.");
   const id = await upsertOpportunity(null, { status: "draft", teams: [], audienceTeams: [], requiresTeamResume: true, pinned: false, questions: [], ...input }, { uid: member.uid, name: member.name });
-  await recordAudit({ actorUid: member.uid, actorName: member.name, action: "opportunity.create", target: id, detail: input.title });
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: "opportunity.create", target: id, detail: input.title });
   return { ok: true, id };
 });
 
@@ -58,6 +58,6 @@ export const PATCH = staffRoute(async ({ member, body }) => {
   const input = await parse(body);
   await upsertOpportunity(id, input, { uid: member.uid, name: member.name });
   const action = input.status && input.status !== prev.status ? `opportunity.${input.status}` : "opportunity.update";
-  await recordAudit({ actorUid: member.uid, actorName: member.name, action, target: id, detail: input.title ?? prev.title });
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action, target: id, detail: input.title ?? prev.title });
   return { ok: true, id };
 });
