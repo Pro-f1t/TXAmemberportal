@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { api } from "@/lib/utils/api";
 import { TEAMS, teamShort, Team, MemberRole } from "@/lib/models/Member";
 import { Badge, Card, Chip, Eyebrow, Field, Pill, Row, Empty } from "@/components/ui";
+import SignupToggle from "@/components/SignupToggle";
 
 export type MemberRowData = {
   uid: string; name: string; email: string; eid: string; role: MemberRole; teams: Team[]; meta: string; counts: string;
@@ -22,7 +23,7 @@ const FLAG = {
 } as const;
 
 /** Search + team chips over the roster, plus the invite form and pending list. */
-export default function MembersList({ rows, invites, initialTeam, showInvite }: { rows: MemberRowData[]; invites: InviteData[]; initialTeam: string; showInvite: boolean }) {
+export default function MembersList({ rows, invites, initialTeam, showInvite, requireApproval }: { rows: MemberRowData[]; invites: InviteData[]; initialTeam: string; showInvite: boolean; requireApproval: boolean }) {
   const router = useRouter();
   const [q, setQ] = useState("");
   const [team, setTeam] = useState<Team | "">(TEAMS.includes(initialTeam as Team) ? (initialTeam as Team) : "");
@@ -92,6 +93,11 @@ export default function MembersList({ rows, invites, initialTeam, showInvite }: 
           {error && <p className="m-0 mt-3 text-[13px]" style={{ color: "var(--color-danger)" }}>{error}</p>}
         </Card>
       )}
+
+      <Card>
+        <Eyebrow>Sign-ups</Eyebrow>
+        <div className="mt-4"><SignupToggle requireApproval={requireApproval} /></div>
+      </Card>
 
       {pending.length > 0 && (
         <Card>

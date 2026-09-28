@@ -164,6 +164,7 @@ export function toEvent(id: string, d: any): PortalEvent {
     title: d.title ?? "Untitled event",
     startsAt: toDateOr(d.startsAt, new Date()),
     timeLabel: d.timeLabel ?? "",
+    endTimeLabel: d.endTimeLabel ?? "",
     location: d.location ?? "",
     capacity: typeof d.capacity === "number" ? d.capacity : null,
     type: EVENT_TYPES.includes(d.type) ? (d.type as EventType) : "workshop",

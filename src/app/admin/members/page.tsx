@@ -1,5 +1,5 @@
 import { getAllMembers, getInvites } from "@/lib/firebase/members";
-import { getAllApplications, getAllEvents } from "@/lib/firebase/portal";
+import { getAllApplications, getAllEvents, getPortalConfig } from "@/lib/firebase/portal";
 import { STAFF_ROLES, teamShort } from "@/lib/models/Member";
 import { splitEvents } from "@/lib/portal/memberData";
 import { PageHeader, Pill } from "@/components/ui";
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminMembers({ searchParams }: { searchParams: Promise<{ team?: string; invite?: string }> }) {
   const { team, invite } = await searchParams;
-  const [members, invites, apps, events] = await Promise.all([getAllMembers(), getInvites(), getAllApplications(), getAllEvents()]);
+  const [members, invites, apps, events, config] = await Promise.all([getAllMembers(), getInvites(), getAllApplications(), getAllEvents(), getPortalConfig()]);
   const { past } = splitEvents(events.filter((e) => e.status === "published" && e.countsForAttendance));
 
   const rows: MemberRowData[] = members.map((m) => {
@@ -43,7 +43,7 @@ export default async function AdminMembers({ searchParams }: { searchParams: Pro
           </>
         }
       />
-      <MembersList rows={rows} invites={invites.map((i) => ({ email: i.email, name: i.name, teams: i.teams, role: i.role }))} initialTeam={team ?? ""} showInvite={invite === "1"} />
+      <MembersList rows={rows} invites={invites.map((i) => ({ email: i.email, name: i.name, teams: i.teams, role: i.role }))} initialTeam={team ?? ""} showInvite={invite === "1"} requireApproval={config.requireApproval} />
     </div>
   );
 }

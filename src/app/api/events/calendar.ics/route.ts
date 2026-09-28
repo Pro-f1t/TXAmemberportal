@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { eventEndsAt, eventTimeRange } from "@/lib/portal/eventTime";
 import { getAllEvents } from "@/lib/firebase/portal";
 import { EVENT_TYPE_LABEL } from "@/lib/models/Portal";
 
@@ -25,7 +26,7 @@ export async function GET() {
     "X-WR-CALNAME:Texas Accelerate",
     "X-WR-TIMEZONE:America/Chicago",
     ...events.flatMap((e) => {
-      const end = new Date(e.startsAt.getTime() + 90 * 60 * 1000);
+      const end = eventEndsAt(e);
       return [
         "BEGIN:VEVENT",
         `UID:${e.id}@txa-portal`,
@@ -34,7 +35,7 @@ export async function GET() {
         `DTEND:${ics(end)}`,
         `SUMMARY:${esc(e.title)}`,
         `LOCATION:${esc(e.location)}`,
-        `DESCRIPTION:${esc(`${EVENT_TYPE_LABEL[e.type]} · ${e.timeLabel}\n${e.description}`)}`,
+        `DESCRIPTION:${esc(`${EVENT_TYPE_LABEL[e.type]} · ${eventTimeRange(e)}\n${e.description}`)}`,
         "END:VEVENT",
       ];
     }),

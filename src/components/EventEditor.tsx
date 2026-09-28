@@ -11,11 +11,11 @@ import { centralDate } from "@/lib/utils/time";
 import { toDateInput } from "@/lib/utils/format";
 
 export type EventForm = {
-  id: string; title: string; date: string; timeLabel: string; location: string; capacity: number | null; type: EventType;
+  id: string; title: string; date: string; timeLabel: string; endTimeLabel: string; location: string; capacity: number | null; type: EventType;
   audienceTeams: Team[]; description: string; countsForAttendance: boolean; pinned: boolean; rsvpUrl: string; status: EventStatus; rsvpCount: number; attendedCount: number;
 };
 
-const BLANK: EventForm = { id: "", title: "", date: "", timeLabel: "", location: "", capacity: null, type: "workshop", audienceTeams: [], description: "", countsForAttendance: true, pinned: false, rsvpUrl: "", status: "draft", rsvpCount: 0, attendedCount: 0 };
+const BLANK: EventForm = { id: "", title: "", date: "", timeLabel: "", endTimeLabel: "", location: "", capacity: null, type: "workshop", audienceTeams: [], description: "", countsForAttendance: true, pinned: false, rsvpUrl: "", status: "draft", rsvpCount: 0, attendedCount: 0 };
 
 export default function EventEditor({ event }: { event: EventForm | null }) {
   const router = useRouter();
@@ -65,7 +65,8 @@ export default function EventEditor({ event }: { event: EventForm | null }) {
             onChange={(d) => set("date", d ? toDateInput(d) : "")}
           />
         </Field>
-        <Field label="Time"><input className="input" value={form.timeLabel} onChange={(e) => set("timeLabel", e.target.value)} placeholder="7:00 PM or All day" /></Field>
+        <Field label="Starts (Central)"><input className="input" value={form.timeLabel} onChange={(e) => set("timeLabel", e.target.value)} placeholder="7:00 PM or All day" /></Field>
+        <Field label="Ends (optional)"><input className="input" value={form.endTimeLabel} onChange={(e) => set("endTimeLabel", e.target.value)} placeholder="8:30 PM" /></Field>
         <Field label="Location"><input className="input" value={form.location} onChange={(e) => set("location", e.target.value)} placeholder="GDC 2.216" /></Field>
         <Field label="Capacity"><input type="number" min={0} className="input" value={form.capacity ?? ""} onChange={(e) => set("capacity", e.target.value === "" ? null : Math.max(0, Number(e.target.value)))} placeholder="No limit" /></Field>
         <FieldGroup label="Type">

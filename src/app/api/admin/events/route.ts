@@ -4,7 +4,7 @@ import { EVENT_TYPES, EventType } from "@/lib/models/Portal";
 import { isTeam } from "@/lib/models/Member";
 import { recordAudit } from "@/lib/firebase/audit";
 import { str, bool } from "@/lib/firebase/fs";
-import { buildStartsAt } from "@/lib/utils/time";
+import { buildStartsAt, parseTimeLabel } from "@/lib/utils/time";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -12,6 +12,11 @@ function parse(body: any): Partial<EventInput> {
   const out: Partial<EventInput> = {};
   if ("title" in body) out.title = str(body.title, 200).trim();
   if ("timeLabel" in body) out.timeLabel = str(body.timeLabel, 40).trim();
+  if ("endTimeLabel" in body) {
+    const end = str(body.endTimeLabel, 40).trim();
+    if (end && !parseTimeLabel(end)) throw new ApiError("End time must be a clock time like 6:30 PM, or left blank.");
+    out.endTimeLabel = end;
+  }
   if ("date" in body) {
     const startsAt = buildStartsAt(str(body.date, 10), out.timeLabel ?? str(body.timeLabel, 40));
     if (!startsAt) throw new ApiError("Pick a valid date.");
@@ -40,7 +45,7 @@ export const POST = staffRoute(async ({ member, body }) => {
   const input = parse(body);
   if (!input.title) throw new ApiError("Give the event a title.");
   if (!input.startsAt) throw new ApiError("Pick a date.");
-  const id = await upsertEvent(null, { status: "draft", audienceTeams: [], countsForAttendance: true, pinned: false, rsvpUrl: "", type: "workshop", timeLabel: "", location: "", capacity: null, description: "", ...input });
+  const id = await upsertEvent(null, { status: "draft", audienceTeams: [], countsForAttendance: true, pinned: false, rsvpUrl: "", type: "workshop", timeLabel: "", endTimeLabel: "", location: "", capacity: null, description: "", ...input });
   await recordAudit({ actorUid: member.uid, actorName: member.name, action: "event.create", target: id, detail: input.title });
   return { ok: true, id };
 });

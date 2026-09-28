@@ -1,4 +1,5 @@
 import { getAllEvents } from "@/lib/firebase/portal";
+import { eventTimeRange } from "@/lib/portal/eventTime";
 import { splitEvents } from "@/lib/portal/memberData";
 import { PageHeader, Pill, Card, Eyebrow, Badge, Row, RowText, Hairline, Empty } from "@/components/ui";
 import EventEditor from "@/components/EventEditor";
@@ -38,7 +39,7 @@ export default async function AdminEvents({ searchParams }: { searchParams: Prom
                 <p className="t-label mb-2.5">{m.label} · {m.items.length}</p>
                 <ShowMore initial={6} label="more" className="flex flex-col gap-2.5" items={m.items.map((e) => (
                   <Row key={e.id} href={`/admin/events?id=${e.id}`} style={editing?.id === e.id ? { outline: "1px solid rgba(96,165,250,0.5)" } : undefined}>
-                    <RowText title={e.title} meta={`${fmtDate(e.startsAt)} · ${e.timeLabel} · ${e.location}${e.status === "published" ? ` · ${e.rsvpUids.length} going` : ""}`} />
+                    <RowText title={e.title} meta={`${fmtDate(e.startsAt)} · ${eventTimeRange(e)} · ${e.location}${e.status === "published" ? ` · ${e.rsvpUids.length} going` : ""}`} />
                     {e.pinned && <Badge tone="accent">Pinned</Badge>}
                     <Badge tone={e.status === "published" ? "ok" : "warn"}>{e.status === "published" ? "Published" : "Draft"}</Badge>
                   </Row>
@@ -64,7 +65,7 @@ export default async function AdminEvents({ searchParams }: { searchParams: Prom
           event={
             editing
               ? {
-                  id: editing.id, title: editing.title, date: toDateInput(editing.startsAt), timeLabel: editing.timeLabel, location: editing.location,
+                  id: editing.id, title: editing.title, date: toDateInput(editing.startsAt), timeLabel: editing.timeLabel, endTimeLabel: editing.endTimeLabel, location: editing.location,
                   capacity: editing.capacity, type: editing.type, audienceTeams: editing.audienceTeams, description: editing.description,
                   countsForAttendance: editing.countsForAttendance, pinned: editing.pinned, rsvpUrl: editing.rsvpUrl, status: editing.status, rsvpCount: editing.rsvpUids.length, attendedCount: editing.attendedUids.length,
                 }

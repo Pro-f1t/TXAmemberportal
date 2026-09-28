@@ -1,4 +1,5 @@
 import { memberPage } from "@/lib/auth/page";
+import { eventTimeRange, eventEnded } from "@/lib/portal/eventTime";
 import { visibleEvents, splitEvents, attendanceState, attendedCount, portalConfig } from "@/lib/portal/memberData";
 import { EVENT_TYPE_LABEL, EventType } from "@/lib/models/Portal";
 import { PageHeader, Pill, Card, Eyebrow, Badge, Empty, Tone } from "@/components/ui";
@@ -52,10 +53,14 @@ export default async function EventsPage() {
                     key={e.id}
                     date={e.startsAt}
                     title={e.title}
-                    meta={`${e.timeLabel} · ${e.location}${full ? " · Full" : ""}`}
+                    meta={`${eventTimeRange(e)} · ${e.location}${full ? " · Full" : ""}`}
                     description={e.description}
                     badges={[{ label: EVENT_TYPE_LABEL[e.type], tone: TYPE_TONE[e.type] }, ...(e.pinned ? [{ label: "Pinned", tone: "accent" as Tone }] : [])]}
-                    action={e.rsvpUrl ? <a href={e.rsvpUrl} target="_blank" rel="noreferrer" className="pill pill-blue pill-sm">RSVP ↗</a> : <RsvpButton eventId={e.id} going={going} disabled={full} />}
+                    action={
+                      eventEnded(e)
+                        ? <Badge tone={e.attendedUids.includes(member.uid) ? "ok" : "muted"}>{e.attendedUids.includes(member.uid) ? "Attended" : "Ended"}</Badge>
+                        : e.rsvpUrl ? <a href={e.rsvpUrl} target="_blank" rel="noreferrer" className="pill pill-blue pill-sm">RSVP ↗</a> : <RsvpButton eventId={e.id} going={going} disabled={full} />
+                    }
                   />
                 );
               })} />

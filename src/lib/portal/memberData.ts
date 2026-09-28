@@ -4,6 +4,7 @@ import {
   PortalEvent, Announcement, isAnnouncementLive, MemberApplication,
 } from "@/lib/models/Portal";
 import { getAllOpportunities, getAllEvents, getAllAnnouncements, getApplicationsForMember, getPortalConfig } from "@/lib/firebase/portal";
+import { eventArchived } from "@/lib/portal/eventTime";
 
 // Everything a member can see, resolved server-side. The collections are small
 // (tens of docs) so reading them whole and filtering in memory is simplest and
@@ -31,13 +32,11 @@ export async function memberApplications(member: Member): Promise<MemberApplicat
   return getApplicationsForMember(member.uid);
 }
 
-// An event stays "upcoming" until 2h after it starts (so the RSVP row doesn't
-// vanish mid-event), then moves to Past.
-const UPCOMING_GRACE_MS = 2 * 60 * 60 * 1000;
-
+// An event stays "upcoming" until 24h after it ends (Central), then moves to
+// the Archive. See lib/portal/eventTime.ts.
 export function splitEvents(events: PortalEvent[], now = Date.now()) {
-  const upcoming = events.filter((e) => e.startsAt.getTime() + UPCOMING_GRACE_MS >= now).sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime());
-  const past = events.filter((e) => e.startsAt.getTime() + UPCOMING_GRACE_MS < now).sort((a, b) => b.startsAt.getTime() - a.startsAt.getTime());
+  const upcoming = events.filter((e) => !eventArchived(e, now)).sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime());
+  const past = events.filter((e) => eventArchived(e, now)).sort((a, b) => b.startsAt.getTime() - a.startsAt.getTime());
   return { upcoming, past };
 }
 
@@ -46,7 +45,8 @@ export type AttendanceState = "attended" | "excused" | "missed" | "upcoming";
 export function attendanceState(e: PortalEvent, uid: string, now = Date.now()): AttendanceState {
   if (e.attendedUids.includes(uid)) return "attended";
   if (e.excusedUids.includes(uid)) return "excused";
-  return e.startsAt.getTime() + UPCOMING_GRACE_MS < now ? "missed" : "upcoming";
+  // "Missed" only once the event is archived, so nobody shows missed while exec is still marking.
+  return eventArchived(e, now) ? "missed" : "upcoming";
 }
 
 /** How many required-type events the member has attended this season. */

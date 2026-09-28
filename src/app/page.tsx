@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { eventTimeRange } from "@/lib/portal/eventTime";
 import { memberPage } from "@/lib/auth/page";
 import { visibleOpportunities, visibleEvents, visibleAnnouncements, memberApplications, splitEvents, portalConfig } from "@/lib/portal/memberData";
 import { ANNOUNCEMENT_LABEL_TEXT, IN_PROGRESS_STATUSES } from "@/lib/models/Portal";
@@ -92,7 +93,7 @@ export default async function HomePage() {
                 {upcoming.length === 0 && <Empty>No upcoming events.</Empty>}
                 {[...upcoming.filter((e) => e.pinned), ...upcoming.filter((e) => !e.pinned)].slice(0, 3).map((e) => (
                   <Link key={e.id} href="/events" className="block">
-                    <EventMini date={e.startsAt} title={e.title} meta={`${e.timeLabel} · ${e.location}`} />
+                    <EventMini date={e.startsAt} title={e.title} meta={`${eventTimeRange(e)} · ${e.location}`} />
                   </Link>
                 ))}
               </div>

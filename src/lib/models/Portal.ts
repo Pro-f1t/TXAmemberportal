@@ -134,6 +134,7 @@ export interface PortalEvent {
   title: string;
   startsAt: Date;
   timeLabel: string; // "6:00 PM" / "All day"
+  endTimeLabel: string; // optional "6:30 PM"; "" = no end time given (Central, same day)
   location: string;
   capacity: number | null;
   type: EventType;

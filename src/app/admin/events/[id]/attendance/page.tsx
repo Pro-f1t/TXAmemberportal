@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { eventTimeRange } from "@/lib/portal/eventTime";
 import { notFound } from "next/navigation";
 import { getEvent } from "@/lib/firebase/portal";
 import { getAllMembers } from "@/lib/firebase/members";
@@ -23,7 +24,7 @@ export default async function EventAttendancePage({ params }: { params: Promise<
         <span>{event.title}</span>
       </div>
       <PageHeader
-        eyebrow={`${fmtDate(event.startsAt)} · ${event.timeLabel} · ${event.location}`}
+        eyebrow={`${fmtDate(event.startsAt)} · ${eventTimeRange(event)} · ${event.location}`}
         title={event.title}
         actions={<Pill href={`/admin/events?id=${event.id}`}>Edit event</Pill>}
       />

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { eventTimeRange } from "@/lib/portal/eventTime";
 import { getAllOpportunities, getAllApplications, getAllEvents, getAllAnnouncements, getPortalConfig } from "@/lib/firebase/portal";
 import { isOpportunityLive, closesSoon, isAnnouncementLive, ANNOUNCEMENT_LABEL_TEXT } from "@/lib/models/Portal";
 import { splitEvents } from "@/lib/portal/memberData";
@@ -74,7 +75,7 @@ export default async function AdminOverview() {
               {upcoming.length === 0 && <Empty>Nothing scheduled.</Empty>}
               {upcoming.slice(0, 2).map((e) => (
                 <Link key={e.id} href={`/admin/events?id=${e.id}`} className="block">
-                  <EventMini date={e.startsAt} title={e.title} meta={`${e.timeLabel} · ${e.location} · ${e.rsvpUids.length} registered`} />
+                  <EventMini date={e.startsAt} title={e.title} meta={`${eventTimeRange(e)} · ${e.location} · ${e.rsvpUids.length} registered`} />
                 </Link>
               ))}
             </div>

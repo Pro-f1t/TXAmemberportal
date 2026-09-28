@@ -1,4 +1,5 @@
 import { memberPage } from "@/lib/auth/page";
+import { eventTimeRange } from "@/lib/portal/eventTime";
 import { visibleEvents, splitEvents, memberApplications } from "@/lib/portal/memberData";
 import { teamShort } from "@/lib/models/Member";
 import { Card, Eyebrow, Badge, Empty, EventMini, Hairline } from "@/components/ui";
@@ -30,7 +31,7 @@ export default async function ProfilePage() {
           <div className="mt-[18px] flex flex-col gap-3">
             {upcoming.length === 0 && <Empty>No upcoming events.</Empty>}
             {upcoming.slice(0, 3).map((e) => (
-              <EventMini key={e.id} date={e.startsAt} title={e.title} meta={`${e.timeLabel} · ${e.location} · ${e.rsvpUids.includes(member.uid) ? "Registered" : "Signup open"}`} />
+              <EventMini key={e.id} date={e.startsAt} title={e.title} meta={`${eventTimeRange(e)} · ${e.location} · ${e.rsvpUids.includes(member.uid) ? "Registered" : "Signup open"}`} />
             ))}
           </div>
         </Card>

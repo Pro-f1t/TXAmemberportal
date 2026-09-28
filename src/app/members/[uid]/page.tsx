@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { eventTimeRange } from "@/lib/portal/eventTime";
 import { notFound } from "next/navigation";
 import { memberPage } from "@/lib/auth/page";
 import { getMember } from "@/lib/firebase/members";
@@ -71,7 +72,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
               {going.length === 0 && <Empty>Not signed up for anything yet.</Empty>}
               {going.map((e) => (
                 <Link key={e.id} href="/events" className="block">
-                  <EventMini date={e.startsAt} title={e.title} meta={`${e.timeLabel} · ${e.location} · ${EVENT_TYPE_LABEL[e.type]}`} />
+                  <EventMini date={e.startsAt} title={e.title} meta={`${eventTimeRange(e)} · ${e.location} · ${EVENT_TYPE_LABEL[e.type]}`} />
                 </Link>
               ))}
             </div>
