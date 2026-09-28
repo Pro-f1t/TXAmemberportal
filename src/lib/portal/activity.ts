@@ -41,6 +41,7 @@ const VERB: Record<string, string> = {
   "export.members": "exported the member roster",
   "export.resumes": "exported the resume book",
   "export.events": "exported event attendance",
+  "export.attendance": "exported the attendance workbook",
 };
 
 export function describe(action: string): { area: Area | "Other"; verb: string } {

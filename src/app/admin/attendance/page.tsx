@@ -39,7 +39,7 @@ export default async function AttendancePage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <PageHeader eyebrow="Exec console · Attendance" title="Attendance" actions={<Pill href="/admin/events">All events</Pill>} />
+      <PageHeader eyebrow="Exec console · Attendance" title="Attendance" actions={<><Pill href="/api/admin/attendance/export" target="_blank" tone="blue">Export to Excel</Pill><Pill href="/admin/events">All events</Pill></>} />
 
       {!configured && (
         <Card>
@@ -51,7 +51,7 @@ export default async function AttendancePage() {
       <Card>
         <Eyebrow>Now and upcoming · {current.length}</Eyebrow>
         <p className="m-0 mt-2 text-[15px] text-muted">
-          Open the live display on the projector at the start of the event. Codes change every 10 seconds, so a screenshot in the group chat won&apos;t work. Anyone the scan misses can be marked on the roster.
+          Open the live display on the projector at the start of the event.
         </p>
         <div className="mt-5 flex flex-col gap-3">
           {current.length === 0 && <Empty>No upcoming events. Publish one under Events.</Empty>}
