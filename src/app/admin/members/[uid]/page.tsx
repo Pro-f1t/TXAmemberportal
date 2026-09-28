@@ -34,7 +34,6 @@ export default async function MemberDetail({ params }: { params: Promise<{ uid: 
         title={m.name}
         actions={
           <>
-            <Pill href={`mailto:${m.email}`}>Message</Pill>
             <Pill href="#role">Change role</Pill>
             <Pill href="#save" tone="blue">Save changes</Pill>
           </>
