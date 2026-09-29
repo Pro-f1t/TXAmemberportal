@@ -1,4 +1,4 @@
-import DarkVeil from "./DarkVeil";
+import DarkVeil from "./LazyDarkVeil";
 import Logo from "./Logo";
 import { InstagramIcon, LinkedInIcon } from "./Icons";
 import { SOCIALS } from "@/data/site";

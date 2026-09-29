@@ -13,8 +13,7 @@ export const dynamic = "force-dynamic";
 
 export default async function OpportunityPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const member = await memberPage(`/opportunities/${id}`);
-  const opp = await getOpportunity(id);
+  const [member, opp] = await Promise.all([memberPage(`/opportunities/${id}`), getOpportunity(id)]);
   if (!opp) notFound();
   // Members only see live postings for their teams; staff can preview anything.
   if (!isStaff(member) && (!isOpportunityLive(opp) || !visibleTo(opp.audienceTeams, member.teams))) notFound();

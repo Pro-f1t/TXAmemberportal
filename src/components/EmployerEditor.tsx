@@ -44,7 +44,7 @@ export default function EmployerEditor({ uid, employer, postings }: { uid: strin
     setError(null);
     try {
       // SVGs pass through untouched; raster logos are downscaled like everything else.
-      const upload = file.type === "image/svg+xml" ? file : await shrinkImage(file, 1600);
+      const upload = file.type === "image/svg+xml" ? file : await shrinkImage(file, 1270);
       set("logoUrl", (await uploadViaApi("/api/admin/uploads/image", upload)).url);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed.");

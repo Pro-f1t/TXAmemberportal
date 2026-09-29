@@ -48,7 +48,7 @@ export default function ProfileCard({ member }: { member: M }) {
     setBusy(true);
     setError(null);
     try {
-      const { url } = await uploadViaApi("/api/profile/photo", await shrinkImage(file));
+      const { url } = await uploadViaApi("/api/profile/photo", await shrinkImage(file, 800));
       setPhoto(url);
       router.refresh();
     } catch (e) {

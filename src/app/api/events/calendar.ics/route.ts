@@ -42,6 +42,6 @@ export async function GET() {
     "END:VCALENDAR",
   ];
   return new NextResponse(lines.join("\r\n") + "\r\n", {
-    headers: { "Content-Type": "text/calendar; charset=utf-8", "Cache-Control": "public, max-age=300" },
+    headers: { "Content-Type": "text/calendar; charset=utf-8", "Cache-Control": "public, max-age=300, s-maxage=600, stale-while-revalidate=3600" },
   });
 }

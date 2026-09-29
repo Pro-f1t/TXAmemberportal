@@ -28,7 +28,7 @@ export function PlaceholderArt({ seed = 0, className = "", label, style }: { see
 export function ArtImage({ src, seed = 0, alt = "", className = "", style }: { src?: string | null; seed?: number; alt?: string; className?: string; style?: CSSProperties }) {
   if (src) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={alt} className={`block object-cover ${className}`} style={style} />;
+    return <img src={src} alt={alt} loading="lazy" decoding="async" className={`block object-cover ${className}`} style={style} />;
   }
   return <PlaceholderArt seed={seed} className={className} label={alt} style={style} />;
 }

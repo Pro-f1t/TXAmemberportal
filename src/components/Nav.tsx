@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Logo from "./Logo";
 import { UserIcon, ChevronDown, MenuIcon, CloseIcon } from "./Icons";
-import { signOutClient } from "@/lib/firebase/auth";
 
 const EASE = "700ms cubic-bezier(0.4, 0, 0.2, 1)";
 // Keep in sync with STAFF_ROLES in lib/models/Member.ts and proxy.ts.
@@ -102,7 +101,8 @@ export default function Nav() {
     : pathname.startsWith(l.href);
 
   const handleSignOut = async () => {
-    try { await signOutClient(); } catch {}
+    // Loaded on demand: the Firebase SDK stays out of every page's initial bundle.
+    try { const { signOutClient } = await import("@/lib/firebase/auth"); await signOutClient(); } catch {}
     await fetch("/api/auth/logout", { method: "POST" });
     setMenuOpen(false);
     setRole(null);

@@ -20,7 +20,11 @@ const requireSession = cache(async function requireSession(): Promise<{ uid: str
 
   let uid: string;
   try {
-    const decoded = await adminAuth.verifySessionCookie(sessionCookie, true);
+    // Signature + expiry are checked locally (no network). We skip the extra
+    // revocation round-trip on every request: nothing in the app revokes a
+    // session except account deletion, and a deleted account has no member
+    // doc, so getMember() below refuses it anyway. Sign-in still checks fully.
+    const decoded = await adminAuth.verifySessionCookie(sessionCookie, false);
     uid = decoded.uid;
   } catch {
     throw new Error("Unauthorized");

@@ -70,7 +70,7 @@ export default function PostingEditor({
     setBusy(true);
     setError(null);
     try {
-      const { url } = await uploadViaApi("/api/admin/uploads/image", await shrinkImage(file, 1600));
+      const { url } = await uploadViaApi("/api/admin/uploads/image", await shrinkImage(file, 1270));
       set("previewImageUrl", url);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed.");

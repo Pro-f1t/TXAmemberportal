@@ -2,8 +2,6 @@
 
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
-import { getStorage, connectStorageEmulator } from "firebase/storage";
 import { EMULATOR_PROJECT_ID } from "./emulator";
 
 const useEmulator = process.env.NEXT_PUBLIC_FIREBASE_EMULATOR === "1";
@@ -34,15 +32,13 @@ export const firebaseConfig = {
 
 export const firebaseClientApp = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
+// The browser only uses Firebase for Google sign-in. All data and uploads go
+// through our API (Admin SDK), so Firestore / Storage client SDKs aren't loaded.
 export const auth = getAuth(firebaseClientApp);
-export const db = getFirestore(firebaseClientApp);
-export const storage = getStorage(firebaseClientApp);
 
 // Local emulator suite. NEXT_PUBLIC_FIREBASE_EMULATOR=1 points the browser SDK
 // at the emulators; the server-side FIRESTORE_EMULATOR_HOST must be set too, or
 // the sign-in popup mints a token the server can't verify.
 if (useEmulator) {
   connectAuthEmulator(auth, "http://127.0.0.1:9098", { disableWarnings: true });
-  connectFirestoreEmulator(db, "127.0.0.1", 8081);
-  connectStorageEmulator(storage, "127.0.0.1", 9198);
 }
