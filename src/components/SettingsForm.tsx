@@ -32,7 +32,7 @@ export default function SettingsForm({ config, feedUrl }: { config: PortalConfig
   };
 
   return (
-    <div className="grid items-start gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+    <div className="grid items-start gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" }}>
       <Card>
         <Eyebrow>Sign-ups</Eyebrow>
         <p className="m-0 mt-2 text-[15px] text-muted">
@@ -56,7 +56,7 @@ export default function SettingsForm({ config, feedUrl }: { config: PortalConfig
 
       <Card>
         <Eyebrow>Season</Eyebrow>
-        <div className="mt-4 grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))" }}>
+        <div className="mt-4 grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(140px, 100%), 1fr))" }}>
           <Field label="Season label" span><input className="input" value={form.season} onChange={(e) => set("season", e.target.value)} placeholder="Fall 2026" /></Field>
           <Field label="Current week"><input className="input" type="number" min={0} max={52} value={form.week} onChange={(e) => set("week", Number(e.target.value))} /></Field>
         </div>

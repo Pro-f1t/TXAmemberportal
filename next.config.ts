@@ -10,6 +10,9 @@ const FIREBASE_AUTH_HOST = "txarecruiting.firebaseapp.com";
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  // Dev only: lets a browser on 127.0.0.1 load Next's client scripts (the preview
+  // pane sometimes can't open localhost). No effect on production builds.
+  allowedDevOrigins: ["127.0.0.1"],
   async rewrites() {
     return [
       { source: "/__/auth/:path*", destination: `https://${FIREBASE_AUTH_HOST}/__/auth/:path*` },

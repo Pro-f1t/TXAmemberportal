@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "@/lib/utils/api";
 import { Badge, Card, Eyebrow, Pill } from "@/components/ui";
+import ShowMore from "@/components/ShowMore";
 import type { AttendanceState } from "@/lib/portal/memberData";
 
 type RowT = { id: string; title: string; meta: string; state: AttendanceState; counts: boolean };
@@ -41,9 +42,8 @@ export default function MemberEvents({ uid, attended, rows }: { uid: string; att
           ))}
         </div>
       )}
-      <div className="mt-[18px] flex flex-col gap-2.5">
-        {rows.length === 0 && <p className="m-0 text-[15px] text-muted">No events this season.</p>}
-        {rows.map((r) => (
+      {rows.length === 0 && <p className="m-0 mt-[18px] text-[15px] text-muted">No events this season.</p>}
+      <ShowMore initial={6} label="more events" className="mt-[18px] flex flex-col gap-2.5" items={rows.map((r) => (
           <div key={r.id} className="row row-wrap">
             <div className="min-w-0" style={{ flex: "1 1 220px" }}>
               <p className="m-0 text-[15px] font-semibold">{r.title}</p>
@@ -53,8 +53,7 @@ export default function MemberEvents({ uid, attended, rows }: { uid: string; att
             {r.state === "missed" && <button type="button" className="pill pill-ghost pill-xs" disabled={busy === r.id} onClick={() => mark(r.id, "excused")}>Excuse</button>}
             {r.state === "attended" && <button type="button" className="pill pill-ghost pill-xs" disabled={busy === r.id} onClick={() => mark(r.id, "unattended")} title="Undo">Undo</button>}
           </div>
-        ))}
-      </div>
+        ))} />
     </Card>
   );
 }

@@ -48,7 +48,7 @@ export default function ActivityLog({ rows }: { rows: Row[] }) {
           {actors.map(([uid, name]) => <option key={uid} value={uid}>{name}</option>)}
         </select>
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="chip-scroll flex flex-wrap gap-2">
         <Chip on={area === ""} onClick={() => setArea("")}>All areas</Chip>
         {AREAS.map((a) => <Chip key={a} on={area === a} onClick={() => setArea(a)}>{a}</Chip>)}
       </div>

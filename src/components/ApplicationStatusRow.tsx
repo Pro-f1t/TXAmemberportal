@@ -93,7 +93,7 @@ export default function ApplicationStatusRow({
         </div>
       )}
       {open && !finalBadge && (
-        <div className="mt-4 grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
+        <div className="mt-4 grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))" }}>
           <label className="flex flex-col gap-2" style={{ gridColumn: "1 / -1" }}>
             <span className="t-label">What the member sees</span>
             <input className="input" placeholder="Interview Sep 12, 3:00 PM · Zoom. 30 minutes with the internal tools lead." value={details.nextStep} onChange={(e) => setDetails((d) => ({ ...d, nextStep: e.target.value }))} />

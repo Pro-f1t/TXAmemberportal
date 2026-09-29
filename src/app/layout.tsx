@@ -25,7 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ScrollToTop />
         <Nav />
         <main>{children}</main>
-        <HideOn prefix="/live"><Footer /></HideOn>
+        <HideOn prefixes={["/live", "/admin"]}><Footer /></HideOn>
       </body>
     </html>
   );

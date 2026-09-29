@@ -25,6 +25,21 @@ export default function MemberEditor({ member, actorIsAdmin, actorUid }: { membe
   const [saved, setSaved] = useState(false);
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm((f) => ({ ...f, [k]: v }));
   const isSelf = actorUid === member.uid;
+  const canDelete = !isSelf && member.role !== "admin" && (member.role !== "exec" || actorIsAdmin);
+
+  const removeAccount = async () => {
+    if (!confirm(`Delete ${member.name}'s account (${member.email})?\n\nThis removes their profile, applications and attendance, and signs them out. It can't be undone.`)) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await api(`/api/admin/members/${member.uid}`, "DELETE");
+      router.push("/admin/members");
+      router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not delete the account.");
+      setBusy(false);
+    }
+  };
 
   const save = async () => {
     setBusy(true);
@@ -47,7 +62,7 @@ export default function MemberEditor({ member, actorIsAdmin, actorUid }: { membe
         <Eyebrow>Profile</Eyebrow>
         <Badge tone={STATUS_TONE[form.status]}>{form.status === "active" ? "Active" : form.status === "pending" ? "Pending" : "Inactive"}</Badge>
       </div>
-      <div className="mt-5 grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+      <div className="mt-5 grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))" }}>
         <Field label="First name"><input className="input" value={form.firstName} onChange={(e) => set("firstName", e.target.value)} /></Field>
         <Field label="Last name"><input className="input" value={form.lastName} onChange={(e) => set("lastName", e.target.value)} /></Field>
         <Field label="UT EID"><input className="input" value={form.eid} onChange={(e) => set("eid", e.target.value)} /></Field>
@@ -108,6 +123,16 @@ export default function MemberEditor({ member, actorIsAdmin, actorUid }: { membe
         {saved && <span className="text-[13px] text-ok">Saved</span>}
         {error && <span className="text-[13px]" style={{ color: "var(--color-danger)" }}>{error}</span>}
       </div>
+
+      {canDelete && (
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl" style={{ padding: "14px 16px", border: "1px solid color-mix(in srgb, var(--color-danger) 35%, transparent)" }}>
+          <div className="min-w-0" style={{ flex: "1 1 220px" }}>
+            <p className="m-0 text-[14px] font-semibold" style={{ color: "var(--color-danger)" }}>Delete account</p>
+            <p className="m-0 mt-1 text-[12px] text-muted">For duplicates or people who shouldn&apos;t be here. Removes their profile, applications and attendance. Can&apos;t be undone.</p>
+          </div>
+          <button type="button" className="pill pill-xs" style={{ background: "var(--color-danger)", color: "#fff" }} onClick={removeAccount} disabled={busy}>Delete account</button>
+        </div>
+      )}
 
       <Hairline className="my-6" />
       <Eyebrow>Resumes · {member.resumes.length}</Eyebrow>

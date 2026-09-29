@@ -34,13 +34,13 @@ export default async function AdminResumes({ searchParams }: { searchParams: Pro
       <form className="filter-bar" action="/admin/resumes" method="get">
         {team && <input type="hidden" name="team" value={team} />}
         <input className="input input-pill" name="q" defaultValue={q} style={{ flex: "1 1 220px", width: "auto" }} placeholder="Search members" />
-        <div className="flex flex-wrap gap-2">
+        <div className="chip-scroll flex flex-wrap gap-2">
           <Link href={href(null)}><Chip on={!team}>All teams</Chip></Link>
           {TEAMS.map((t) => <Link key={t} href={href(t)}><Chip on={team === t}>{teamShort(t)}</Chip></Link>)}
         </div>
       </form>
 
-      <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+      <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" }}>
         <Card className="flex-1">
           <div className="flex flex-wrap justify-between gap-4">
             <Eyebrow>{team ? teamShort(team) : "All members"} · {rows.filter((x) => x.r).length} resumes</Eyebrow>

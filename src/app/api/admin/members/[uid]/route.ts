@@ -3,6 +3,7 @@ import { getMember, updateMember, MemberPatch } from "@/lib/firebase/members";
 import { isTeam, MemberRole, MemberStatus, MEMBER_STATUSES } from "@/lib/models/Member";
 import { recordAudit } from "@/lib/firebase/audit";
 import { str } from "@/lib/firebase/fs";
+import { deleteMemberAccount } from "@/lib/firebase/accounts";
 
 /** Exec edits a member's profile, teams, role, and membership status. */
 export const PATCH = staffRoute(async ({ member: actor, body, params }) => {
@@ -58,5 +59,23 @@ export const PATCH = staffRoute(async ({ member: actor, body, params }) => {
     patch.status ? `status → ${patch.status}` : "",
   ].filter(Boolean).join(", ") || "profile details";
   await recordAudit({ source: "console", actorUid: actor.uid, actorName: actor.name, action: patch.role || patch.director !== undefined ? "member.role" : patch.status ? "member.status" : "member.update", target: target.uid, detail: `${target.name}: ${what}` });
+  return { ok: true };
+});
+
+/**
+ * Delete an account (duplicates, strangers in "Waiting for approval", people who
+ * left). Never yourself, never an admin, and only an admin can delete an exec.
+ */
+export const DELETE = staffRoute(async ({ member: actor, params }) => {
+  const target = await getMember(params.uid);
+  if (!target) throw new ApiError("Member not found.", 404);
+  if (target.uid === actor.uid) throw new ApiError("You can't delete your own account.");
+  if (target.role === "admin") throw new ApiError("Admin accounts can't be deleted from the console.");
+  if (target.role === "exec" && actor.role !== "admin") throw new ApiError("Only an admin can delete an exec's account.", 403);
+  const removed = await deleteMemberAccount(target.uid);
+  await recordAudit({
+    source: "console", actorUid: actor.uid, actorName: actor.name, action: "member.delete", target: target.uid,
+    detail: `${target.name} (${target.email}, ${target.status}) · ${removed.applications} application${removed.applications === 1 ? "" : "s"}, ${removed.events} event mark${removed.events === 1 ? "" : "s"} removed`,
+  });
   return { ok: true };
 });

@@ -19,7 +19,7 @@ export default function EventRow({
 
   return (
     <div className="row row-lg" style={{ cursor: expandable ? "pointer" : "default" }} onClick={toggle} role={expandable ? "button" : undefined} aria-expanded={expandable ? open : undefined}>
-      <div className="grid items-center gap-5" style={{ gridTemplateColumns: "56px minmax(0,1fr) auto" }}>
+      <div className="ev-grid">
         <DateBlock date={date} size="lg" />
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2.5">
@@ -28,7 +28,7 @@ export default function EventRow({
           </div>
           <p className="m-0 mt-1.5 text-[13px] text-muted">{meta}</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="ev-action flex items-center gap-3">
           {action && <div onClick={(e) => e.stopPropagation()}>{action}</div>}
           {expandable && (
             <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted" style={{ background: "rgba(255,255,255,0.06)" }} aria-hidden>
@@ -38,7 +38,7 @@ export default function EventRow({
         </div>
       </div>
       {open && (
-        <div className="mt-3" style={{ paddingLeft: 76 }}><RichText text={description} size={15} gap={8} className="text-muted" /></div>
+        <div className="ev-desc mt-3"><RichText text={description} size={15} gap={8} className="text-muted" /></div>
       )}
     </div>
   );

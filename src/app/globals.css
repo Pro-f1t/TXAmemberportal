@@ -240,3 +240,71 @@ a:hover .arrow-on { background: #fff; }
 
 /* Members / resume-book filter bar. */
 .filter-bar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+
+/* ================= Phone layout (≤ 699px) =================
+   Desktop spacing on a 390px screen left ~250px for content and made every page
+   a long scroll. This layer tightens padding, type and controls so a screen shows
+   several items at a glance. !important is deliberate: many cards/rows carry
+   inline desktop padding. */
+.ev-grid { display: grid; align-items: center; gap: 12px 20px; grid-template-columns: 56px minmax(0, 1fr) auto; }
+.ev-desc { padding-left: 76px; }
+.rail-strip { display: none; }
+@media (max-width: 899px) {
+  .rail-desktop { display: none !important; }
+  .rail-strip {
+    display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+    margin-inline: -20px; padding: 2px 20px 4px;
+  }
+  .rail-strip::-webkit-scrollbar { display: none; }
+  .rail-strip a { flex: none; }
+}
+@media (max-width: 699px) {
+  .shell, .shell-x { padding-inline: 14px; }
+  .rail-strip { margin-inline: -14px; padding-inline: 14px; }
+  .card { border-radius: 22px; padding: 16px !important; }
+  .card.card-flush { padding: 0 !important; }
+  .row { border-radius: 16px; padding: 12px 14px !important; }
+  .row-lg { padding: 13px 14px !important; }
+  .row-wrap { gap: 6px 10px; }
+  .tile { border-radius: 16px; padding: 10px 12px !important; }
+  .tile-num, .tile-num-lg { font-size: 22px !important; }
+  .tile-label { font-size: 11px !important; margin-top: 2px !important; }
+  .t-h1 { font-size: 26px; }
+  .t-h2 { font-size: 24px; }
+  .t-eyebrow { font-size: 0.6875rem; letter-spacing: 0.12em; }
+  .pill { font-size: 14px; padding: 9px 16px; }
+  .pill-sm { font-size: 13px; padding: 8px 14px; }
+  .pill-xs { font-size: 12px; padding: 6px 11px; }
+  .chip { font-size: 12px; padding: 5px 10px; }
+  .badge { font-size: 0.625rem; padding: 0.2rem 0.55rem; }
+  .filter-bar { gap: 8px; }
+  .page-header { gap: 12px !important; }
+  .page-actions { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; width: calc(100% + 28px); margin-inline: -14px; padding-inline: 14px; }
+  .page-actions::-webkit-scrollbar { display: none; }
+  .page-actions > * { flex: none; }
+  .stat-grid { align-items: stretch; }
+  .ev-action .pill { font-size: 12px; padding: 6px 13px; }
+  .ev-action { gap: 8px !important; }
+  .hero-ctas { gap: 8px !important; flex-wrap: nowrap !important; }
+  .hero-ctas .pill { font-size: 13px; padding: 8px 13px; }
+  /* Home previews: a few lines each; the full text lives on its own page */
+  .clamp-2-phone { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .clamp-phone { max-height: 4.7em; overflow: hidden; -webkit-mask-image: linear-gradient(#000 55%, transparent); mask-image: linear-gradient(#000 55%, transparent); }
+  .hide-phone { display: none !important; }
+  .lead-text { font-size: 15px !important; }
+  /* Swipeable chip rows instead of three wrapped lines of filters */
+  .chip-scroll { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; margin-inline: -14px; padding-inline: 14px; }
+  .chip-scroll::-webkit-scrollbar { display: none; }
+  .chip-scroll > * { flex: none; }
+  /* Four compact stat tiles in one row */
+  .stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 8px !important; }
+  /* Event rows: date + text, actions tucked under the title */
+  .ev-grid { grid-template-columns: 40px minmax(0, 1fr); gap: 6px 12px; }
+  .ev-grid > .ev-action { grid-column: 2; justify-self: start; }
+  .ev-desc { padding-left: 52px; }
+  .date-lg { width: 40px !important; }
+  .date-lg .date-day { font-size: 22px !important; }
+  /* Member directory: two tiles per row */
+  .dir-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+}

@@ -15,7 +15,7 @@ export default async function AdminTeams() {
   return (
     <div className="flex flex-col gap-5">
       <PageHeader eyebrow="Exec console · Field teams" title="Field teams" actions={<Pill href="/admin/members?invite=1" tone="blue">Add member to a team</Pill>} />
-      <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
+      <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))" }}>
         {FIELD_TEAMS.map((ft) => {
           const team = ft.name as Team;
           const leads = active.filter((m) => m.role === "lead" && m.teams.includes(team));

@@ -34,7 +34,7 @@ export default async function OpportunityPage({ params }: { params: Promise<{ id
         <span>{opp.title}</span>
       </div>
 
-      <div className="mt-5 grid items-start gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+      <div className="mt-5 grid items-start gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" }}>
         <Card className="lg:col-span-2" style={{ padding: "36px clamp(24px, 3vw, 40px)" }}>
           <div className="flex flex-wrap items-center gap-2.5">
             {existing ? <Badge tone="accent">{APPLICATION_STATUS_LABEL[existing.status]}</Badge> : closesSoon(opp) ? <Badge tone="warn">Closes soon</Badge> : open ? <Badge tone="ok">Open</Badge> : <Badge tone="muted">Closed</Badge>}

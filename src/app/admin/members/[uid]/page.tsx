@@ -41,7 +41,7 @@ export default async function MemberDetail({ params }: { params: Promise<{ uid: 
           </>
         }
       />
-      <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+      <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" }}>
         <MemberEditor
           actorIsAdmin={actor.role === "admin"}
           actorUid={actor.uid}

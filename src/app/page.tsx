@@ -44,25 +44,25 @@ export default async function HomePage() {
     <section className="shell pb-16" style={{ paddingTop: 90 }}>
       <div className="flex flex-col gap-5">
         {/* Hero */}
-        <div className="card grid items-center" style={{ padding: "36px 40px", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 32 }}>
+        <div className="card grid items-center" style={{ padding: "36px 40px", gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))", gap: 32 }}>
           <div>
             <Eyebrow>{config.season} · Week {config.week}</Eyebrow>
             <h1 className="t-h1 mt-3">Welcome back, {member.firstName || member.name.split(" ")[0]}.</h1>
-            <p className="mt-3.5 text-[18px] leading-[1.55] text-muted" style={{ letterSpacing: "-0.02em" }}>{heroLine}</p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <p className="lead-text mt-3.5 text-[18px] leading-[1.55] text-muted" style={{ letterSpacing: "-0.02em" }}>{heroLine}</p>
+            <div className="hero-ctas mt-6 flex flex-wrap gap-3">
               <Pill href="/opportunities" tone="blue">Browse opportunities</Pill>
               <Pill href="/profile#resumes">Update my resumes</Pill>
             </div>
           </div>
-          <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))" }}>
-            <div className="tile"><p className="tile-num m-0">{opps.length}</p><p className="m-0 mt-1.5 text-[13px] text-muted">Open postings</p></div>
-            <div className="tile"><p className="tile-num m-0">{activeApps.length}</p><p className="m-0 mt-1.5 text-[13px] text-muted">Your applications</p></div>
-            <div className="tile"><p className="tile-num m-0">{apps.filter((a) => a.status === "placed").length}</p><p className="m-0 mt-1.5 text-[13px] text-muted">Active {apps.filter((a) => a.status === "placed").length === 1 ? "project" : "projects"}</p></div>
-            <div className="tile"><p className="tile-num m-0">{eventsThisMonth}</p><p className="m-0 mt-1.5 text-[13px] text-muted">Events this month</p></div>
+          <div className="stat-grid grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(130px, 100%), 1fr))" }}>
+            <div className="tile"><p className="tile-num m-0">{opps.length}</p><p className="m-0 mt-1.5 tile-label text-[13px] text-muted">Open postings</p></div>
+            <div className="tile"><p className="tile-num m-0">{activeApps.length}</p><p className="m-0 mt-1.5 tile-label text-[13px] text-muted">Your applications</p></div>
+            <div className="tile"><p className="tile-num m-0">{apps.filter((a) => a.status === "placed").length}</p><p className="tile-label m-0 mt-1.5 text-[13px] text-muted">Active {apps.filter((a) => a.status === "placed").length === 1 ? "project" : "projects"}</p></div>
+            <div className="tile"><p className="tile-num m-0">{eventsThisMonth}</p><p className="m-0 mt-1.5 tile-label text-[13px] text-muted">Events this month</p></div>
           </div>
         </div>
 
-        <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+        <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" }}>
           {/* Announcements */}
           <Card pad={32}>
             <div className="flex items-center justify-between gap-4">
@@ -80,7 +80,7 @@ export default async function HomePage() {
                     <span className="text-[12px] text-muted">{fmtDate(a.publishAt ?? a.createdAt)} · {a.authorName}</span>
                   </div>
                   <p className="m-0 mt-3 text-[20px] font-semibold" style={{ letterSpacing: "-0.02em" }}>{a.title}</p>
-                  <RichText text={a.body} className="text-muted" firstGap={8} />
+                  <div className="clamp-phone"><RichText text={a.body} className="text-muted" firstGap={8} /></div>
                 </div>
               ))}
             </div>

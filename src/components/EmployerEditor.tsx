@@ -72,7 +72,7 @@ export default function EmployerEditor({ uid, employer, postings }: { uid: strin
           <span className="text-[12px] text-muted">Default posting image · {POSTING_IMAGE_SIZE}. Used on this employer&apos;s postings unless a posting has its own.</span>
         </div>
         <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" className="hidden" onChange={(e) => onLogo(e.target.files?.[0])} />
-        <div className="grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", flex: "1 1 260px" }}>
+        <div className="grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", flex: "1 1 260px" }}>
           <Field label="Employer name" span><input className="input" value={form.name} onChange={(e) => set("name", e.target.value)} /></Field>
           <Field label="Contact"><input className="input" value={form.contact} onChange={(e) => set("contact", e.target.value)} /></Field>
           <Field label="Email"><input className="input" type="email" value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>

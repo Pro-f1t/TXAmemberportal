@@ -37,7 +37,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
         <span>/</span>
         <span>{m.name}</span>
       </div>
-      <div className="mt-5 grid items-start gap-6" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
+      <div className="mt-5 grid items-start gap-6" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))" }}>
         <Card className="flex flex-col">
           <span className="flex items-center justify-center overflow-hidden rounded-3xl text-[36px] font-semibold text-accent" style={{ width: 160, height: 200, background: "var(--color-surface-2)", letterSpacing: "-0.03em" }}>
             {m.photoUrl ? (

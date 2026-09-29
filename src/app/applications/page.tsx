@@ -38,7 +38,7 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
           }
         />
 
-        <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+        <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" }}>
           <Card className="flex flex-col gap-3">
             <Eyebrow>{past ? "Past" : "In progress"}</Eyebrow>
             <div className="mt-1.5 flex flex-col gap-3">

@@ -67,7 +67,7 @@ export default function MembersList({ rows, invites, initialTeam, showInvite, re
     <>
       <div className="filter-bar">
         <input className="input input-pill" style={{ flex: "1 1 260px", width: "auto" }} placeholder="Search by name, EID, or email" value={q} onChange={(e) => setQ(e.target.value)} />
-        <div className="flex flex-wrap gap-2">
+        <div className="chip-scroll flex flex-wrap gap-2">
           <Chip on={team === ""} onClick={() => setTeam("")}>All teams</Chip>
           {TEAMS.map((t) => <Chip key={t} on={team === t} onClick={() => setTeam(t)}>{teamShort(t)}</Chip>)}
         </div>
@@ -77,7 +77,7 @@ export default function MembersList({ rows, invites, initialTeam, showInvite, re
         <Card>
           <Eyebrow>Add a member</Eyebrow>
           <p className="m-0 mt-2 text-[15px] text-muted">Enter the Google email they&apos;ll sign in with. Their account is active the moment they sign in, with these teams and role.</p>
-          <div className="mt-4 grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
+          <div className="mt-4 grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(200px, 100%), 1fr))" }}>
             <Field label="Email"><input className="input" type="email" value={inv.email} onChange={(e) => setInv((i) => ({ ...i, email: e.target.value }))} placeholder="name@utexas.edu" /></Field>
             <Field label="Name"><input className="input" value={inv.name} onChange={(e) => setInv((i) => ({ ...i, name: e.target.value }))} placeholder="Full name" /></Field>
           </div>
@@ -103,9 +103,9 @@ export default function MembersList({ rows, invites, initialTeam, showInvite, re
       {pending.length > 0 && (
         <Card>
           <Eyebrow>Waiting for approval · {pending.length}</Eyebrow>
-          <p className="m-0 mt-2 text-[15px] text-muted">Signed in with Google but not yet a member. Open one to set their teams and activate.</p>
+          <p className="m-0 mt-2 text-[15px] text-muted">Signed in with Google but not yet a member. Open one to set their teams and activate, or delete duplicates and people you don&apos;t know.</p>
           <div className="mt-4 flex flex-col gap-2.5">
-            {pending.map((r) => <MemberRow key={r.uid} r={r} />)}
+            {pending.map((r) => <PendingRow key={r.uid} r={r} />)}
           </div>
         </Card>
       )}
@@ -147,6 +147,37 @@ export default function MembersList({ rows, invites, initialTeam, showInvite, re
   );
 }
 
+/** A pending sign-up: open to activate, or delete a duplicate / stranger outright. */
+function PendingRow({ r }: { r: MemberRowData }) {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [gone, setGone] = useState(false);
+  const remove = async () => {
+    if (!confirm(`Delete ${r.name === "NA" ? r.email : r.name}'s account (${r.email})? It can't be undone.`)) return;
+    setBusy(true);
+    try {
+      await api(`/api/admin/members/${r.uid}`, "DELETE");
+      setGone(true);
+      router.refresh();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Could not delete the account.");
+      setBusy(false);
+    }
+  };
+  if (gone) return null;
+  return (
+    <Row>
+      <div className="min-w-0" style={{ flex: "1 1 220px" }}>
+        <p className="m-0 text-[15px] font-semibold">{r.name === "NA" ? r.email : r.name}</p>
+        <p className="m-0 mt-1 truncate text-[12px] text-muted">{r.email}</p>
+      </div>
+      <Badge tone="warn">Pending</Badge>
+      <Link href={`/admin/members/${r.uid}`} className="pill pill-ghost pill-xs">Open</Link>
+      <button type="button" onClick={remove} disabled={busy} className="pill pill-ghost pill-xs" style={{ color: "var(--color-danger)" }}>{busy ? "…" : "Delete"}</button>
+    </Row>
+  );
+}
+
 function MemberRow({ r }: { r: MemberRowData }) {
   const f = FLAG[r.flag];
   return (
@@ -157,10 +188,8 @@ function MemberRow({ r }: { r: MemberRowData }) {
       </div>
       <span className="text-[13px] text-muted">{r.counts}</span>
       <Badge tone={f.tone}>{f.label}</Badge>
-      <span className="pill pill-ghost pill-xs">Open</span>
+      <span className="hide-phone pill pill-ghost pill-xs">Open</span>
     </Row>
   );
 }
 
-// Keep Link imported for future row-level links without a lint warning.
-void Link;

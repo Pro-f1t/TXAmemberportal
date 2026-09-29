@@ -17,7 +17,7 @@ export default async function ProfilePage() {
 
   return (
     <section className="shell pb-16" style={{ paddingTop: 90 }}>
-      <div className="grid items-stretch gap-6" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
+      <div className="grid items-stretch gap-6" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))" }}>
         <Card className="flex flex-col">
           <ProfileCard
             member={{

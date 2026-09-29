@@ -38,14 +38,14 @@ export default async function AdminOverview() {
 
       <SignupToggle requireApproval={config.requireApproval} variant="banner" />
 
-      <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
+      <div className="stat-grid grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(160px, 100%), 1fr))" }}>
         <StatTile surface={1} value={live.length} label="Live postings" />
         <StatTile surface={1} value={drafts.length} label="Drafts waiting to post" tone={drafts.length ? "warn" : undefined} />
         <StatTile surface={1} value={closing.length} label="Closing this week" />
         <Link href="/admin/applications" className="block"><StatTile surface={1} value={newApps.length} label="New applications" /></Link>
       </div>
 
-      <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+      <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" }}>
         <Card>
           <div className="flex items-center justify-between gap-4">
             <Eyebrow>Postings</Eyebrow>

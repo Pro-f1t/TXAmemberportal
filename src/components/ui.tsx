@@ -48,12 +48,12 @@ export function Eyebrow({ children, className = "" }: { children: ReactNode; cla
 /** Screen header: eyebrow + h2 on the left, actions on the right. */
 export function PageHeader({ eyebrow, title, actions }: { eyebrow: ReactNode; title: ReactNode; actions?: ReactNode }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-6">
-      <div>
+    <div className="page-header flex flex-wrap items-end justify-between gap-6">
+      <div className="min-w-0">
         <p className="t-eyebrow">{eyebrow}</p>
         <h2 className="t-h2 mt-2">{title}</h2>
       </div>
-      {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
+      {actions && <div className="page-actions flex flex-wrap gap-2">{actions}</div>}
     </div>
   );
 }
@@ -144,9 +144,9 @@ export function RowText({ title, meta, titleSize = 15, className = "" }: { title
 /** Month/day date block. */
 export function DateBlock({ date, size = "md" }: { date: Date; size?: "md" | "lg" }) {
   return (
-    <div className="shrink-0 text-center" style={size === "lg" ? { width: 56 } : undefined}>
+    <div className={`shrink-0 text-center ${size === "lg" ? "date-lg" : ""}`} style={size === "lg" ? { width: 56 } : undefined}>
       <p className="m-0 text-[12px] text-muted">{monthShort(date)}</p>
-      <p className="m-0 font-semibold" style={{ marginTop: 2, fontSize: size === "lg" ? 26 : 22, letterSpacing: "-0.02em", lineHeight: size === "lg" ? 1 : 1.2 }}>
+      <p className="date-day m-0 font-semibold" style={{ marginTop: 2, fontSize: size === "lg" ? 26 : 22, letterSpacing: "-0.02em", lineHeight: size === "lg" ? 1 : 1.2 }}>
         {dayNum(date)}
       </p>
     </div>
@@ -169,10 +169,10 @@ export function EventMini({ date, title, meta }: { date: Date; title: string; me
 export function StatTile({ value, label, tone, surface = 2 }: { value: ReactNode; label: string; tone?: "warn" | "danger"; surface?: 1 | 2 }) {
   return (
     <div className="tile" style={surface === 1 ? { background: "var(--color-surface)", padding: 24 } : undefined}>
-      <p className={surface === 1 ? "m-0 text-[36px] font-semibold leading-[1.2]" : "tile-num m-0"} style={{ letterSpacing: "-0.02em", color: tone === "warn" ? "var(--color-warn)" : tone === "danger" ? "var(--color-danger)" : undefined }}>
+      <p className={surface === 1 ? "tile-num-lg m-0 text-[36px] font-semibold leading-[1.2]" : "tile-num m-0"} style={{ letterSpacing: "-0.02em", color: tone === "warn" ? "var(--color-warn)" : tone === "danger" ? "var(--color-danger)" : undefined }}>
         {value}
       </p>
-      <p className="m-0 mt-1.5 text-[13px] text-muted">{label}</p>
+      <p className="tile-label m-0 mt-1.5 text-[13px] text-muted">{label}</p>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { getBaseUrl } from "@/lib/utils/baseUrl";
 import { fmtDate } from "@/lib/utils/format";
 import { PageHeader, Card, Eyebrow, Empty, Pill, Row, RowText } from "@/components/ui";
 import AttendanceEventRow from "@/components/AttendanceEventRow";
+import ShowMore from "@/components/ShowMore";
 
 export const dynamic = "force-dynamic";
 
@@ -53,9 +54,8 @@ export default async function AttendancePage() {
         <p className="m-0 mt-2 text-[15px] text-muted">
           Open the live display on the projector at the start of the event.
         </p>
-        <div className="mt-5 flex flex-col gap-3">
-          {current.length === 0 && <Empty>No upcoming events. Publish one under Events.</Empty>}
-          {current.map((e) => (
+        {current.length === 0 && <div className="mt-5"><Empty>No upcoming events. Publish one under Events.</Empty></div>}
+        <ShowMore initial={6} label="more upcoming events" className="mt-5 flex flex-col gap-3" items={current.map((e) => (
             <AttendanceEventRow
               key={e.id}
               event={{
@@ -68,8 +68,7 @@ export default async function AttendancePage() {
               backupRemainingMs={backup[e.id] ?? 0}
               disabled={!configured}
             />
-          ))}
-        </div>
+          ))} />
       </Card>
 
       <Card>

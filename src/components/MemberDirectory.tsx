@@ -36,7 +36,7 @@ export default function MemberDirectory({ rows }: { rows: DirectoryRow[] }) {
     <>
       <div className="filter-bar">
         <input className="input input-pill" style={{ flex: "1 1 260px", width: "auto" }} placeholder="Search by name or major" value={q} onChange={(e) => setQ(e.target.value)} />
-        <div className="flex flex-wrap gap-2">
+        <div className="chip-scroll flex flex-wrap gap-2">
           <Chip on={team === ""} onClick={() => setTeam("")}>All teams</Chip>
           {TEAMS.map((t) => <Chip key={t} on={team === t} onClick={() => setTeam(t)}>{teamShort(t)}</Chip>)}
         </div>
@@ -52,9 +52,9 @@ export default function MemberDirectory({ rows }: { rows: DirectoryRow[] }) {
           {groupRows(visible).map((g) => (
             <div key={g.label} className="flex flex-col gap-3">
               <p className="t-label m-0">{g.label} · {g.rows.length}</p>
-              <div className="grid gap-4 justify-items-center" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))" }}>
+              <div className="dir-grid grid gap-4 justify-items-center" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(210px, 100%), 1fr))" }}>
                 {g.rows.map((r) => (
-                  <Link key={r.uid} href={`/members/${r.uid}`} className="card flex w-full min-w-0 flex-col overflow-hidden transition-colors" style={{ maxWidth: 300, padding: 0 }}>
+                  <Link key={r.uid} href={`/members/${r.uid}`} className="card card-flush flex w-full min-w-0 flex-col overflow-hidden transition-colors" style={{ maxWidth: 300, padding: 0 }}>
                     <span className="relative block w-full overflow-hidden" style={{ aspectRatio: "4 / 5", background: "var(--color-surface-2)" }}>
                       {r.photoUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -67,8 +67,8 @@ export default function MemberDirectory({ rows }: { rows: DirectoryRow[] }) {
                     <span className="flex min-w-0 flex-col gap-1.5" style={{ padding: "16px 18px 18px" }}>
                       <span className="truncate text-[17px] font-semibold" style={{ letterSpacing: "-0.02em" }}>{r.name}</span>
                       {r.title && <span className="truncate text-[13px] font-medium text-accent">{r.title}</span>}
-                      <span className="truncate text-[13px] text-muted">{r.meta || "Major not set"}</span>
-                      <span className="mt-1 flex flex-wrap gap-1.5">
+                      <span className="hide-phone truncate text-[13px] text-muted">{r.meta || "Major not set"}</span>
+                      <span className="hide-phone mt-1 flex flex-wrap gap-1.5">
                         {r.teams.length === 0 && <span className="text-[12px] text-muted">No team yet</span>}
                         {r.teams.map((t) => <span key={t} className="chip chip-static">{teamShort(t)}</span>)}
                       </span>

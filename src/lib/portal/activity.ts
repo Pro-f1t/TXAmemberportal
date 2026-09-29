@@ -35,6 +35,7 @@ const VERB: Record<string, string> = {
   "member.role": "changed a role",
   "member.status": "changed membership",
   "member.update": "edited a profile",
+  "member.delete": "deleted an account",
   "member.invite": "invited a member",
   "member.uninvite": "removed an invite",
   "config.update": "changed settings",

@@ -57,7 +57,7 @@ export default function EventEditor({ event }: { event: EventForm | null }) {
         <Eyebrow>{isNew ? "New event" : `Editing · ${event?.title}`}</Eyebrow>
         <Badge tone={form.status === "published" ? "ok" : "warn"}>{form.status === "published" ? "Published" : "Draft"}</Badge>
       </div>
-      <div className="mt-5 grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+      <div className="mt-5 grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))" }}>
         <Field label="Title" span><input className="input" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Consulting Case Night" /></Field>
         <Field label="Date">
           <DatePicker

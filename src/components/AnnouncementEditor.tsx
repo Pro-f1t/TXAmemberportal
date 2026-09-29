@@ -60,7 +60,7 @@ export default function AnnouncementEditor({ announcement }: { announcement: Ann
         <Eyebrow>{isNew ? "New announcement" : `Editing · ${announcement?.title}`}</Eyebrow>
         {form.status === "draft" ? <Badge tone="muted">Draft</Badge> : form.status === "scheduled" ? <Badge tone="warn">Scheduled</Badge> : form.label === "pinned" ? <Badge tone="accent">Pinned</Badge> : <Badge tone="ok">Live</Badge>}
       </div>
-      <div className="mt-5 grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+      <div className="mt-5 grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))" }}>
         <Field label="Title" span><input className="input" value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Four new postings are live" /></Field>
         <Field label="Body" span><textarea className="textarea" value={form.body} onChange={(e) => set("body", e.target.value)} placeholder="What members need to know, in two or three sentences." /></Field>
         <FieldGroup label="Label">

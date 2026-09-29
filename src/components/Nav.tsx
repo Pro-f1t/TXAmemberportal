@@ -141,7 +141,7 @@ export default function Nav() {
               }),
         }}
       >
-        <div className="flex items-center justify-between gap-6">
+        <div className="flex items-center justify-between gap-3 sm:gap-6">
           <Link href={inConsole ? "/admin" : "/"} aria-label="Texas Accelerate home" className="shrink-0">
             <Logo priority height={scrolled ? 28 : 36} style={{ transition: `all ${EASE}` }} />
           </Link>
@@ -162,7 +162,7 @@ export default function Nav() {
             </nav>
           )}
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             {signedIn && isStaff && !inConsole && (
               <Link
                 href="/admin"
@@ -178,12 +178,12 @@ export default function Nav() {
                 <button
                   onClick={() => setMenuOpen((v) => !v)}
                   aria-expanded={menuOpen}
-                  className="flex items-center gap-2 whitespace-nowrap text-[15px] font-semibold text-white"
-                  style={{ paddingInline: 16, paddingBlock: 10, borderRadius: 999, background: "rgba(255,255,255,0.08)", transition: `all ${EASE}` }}
+                  className="flex items-center gap-2 whitespace-nowrap px-3 text-[15px] font-semibold text-white sm:px-4"
+                  style={{ paddingBlock: 10, borderRadius: 999, background: "rgba(255,255,255,0.08)", transition: `all ${EASE}` }}
                 >
                   <UserIcon className="h-4 w-4 text-accent" />
                   <span className="hidden max-w-[140px] truncate sm:inline">{displayName}</span>
-                  <ChevronDown className="h-3.5 w-3.5 text-muted" />
+                  <ChevronDown className="hidden h-3.5 w-3.5 text-muted sm:block" />
                 </button>
 
                 {menuOpen && (

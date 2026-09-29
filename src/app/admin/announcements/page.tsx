@@ -20,7 +20,7 @@ export default async function AdminAnnouncements({ searchParams }: { searchParam
   return (
     <div className="flex flex-col gap-5">
       <PageHeader eyebrow="Exec console · Announcements" title="Announcements" actions={<Pill href="/admin/announcements?id=new" tone="blue">New announcement</Pill>} />
-      <div className="grid items-start gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+      <div className="grid items-start gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" }}>
         <Card>
           <Eyebrow>Posted</Eyebrow>
           <div className="mt-[18px] flex flex-col">

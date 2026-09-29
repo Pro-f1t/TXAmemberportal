@@ -29,7 +29,7 @@ export default async function AdminEvents({ searchParams }: { searchParams: Prom
           </>
         }
       />
-      <div className="grid items-start gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+      <div className="grid items-start gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" }}>
         <Card>
           <Eyebrow>All events</Eyebrow>
           <div className="mt-[18px] flex flex-col gap-5">

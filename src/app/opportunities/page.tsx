@@ -43,7 +43,7 @@ export default async function OpportunitiesPage({ searchParams }: { searchParams
         {sorted.length === 0 ? (
           <div className="card p-7"><Empty>No open postings for your teams right now. Check back after the next announcement.</Empty></div>
         ) : (
-          <ShowMore initial={12} label="more postings" className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))" }} items={sorted.map((o, i) => {
+          <ShowMore initial={12} label="more postings" className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(340px, 100%), 1fr))" }} items={sorted.map((o, i) => {
               const soon = closesSoon(o);
               return (
                 <Link key={o.id} href={`/opportunities/${o.id}`} className="card flex min-w-0 flex-col gap-3.5 transition-colors" style={{ padding: 20 }}>
@@ -56,7 +56,7 @@ export default async function OpportunitiesPage({ searchParams }: { searchParams
                     </span>
                   </div>
                   <p className="m-0 text-[19px] font-bold leading-[1.2]" style={{ letterSpacing: "-0.02em" }}>{o.title}</p>
-                  <p className="m-0 text-[14px] leading-[1.5] text-muted">{o.summary}</p>
+                  <p className="clamp-2-phone m-0 text-[14px] leading-[1.5] text-muted">{o.summary}</p>
                   <div className="mt-auto flex items-center justify-between gap-3 pt-2">
                     <span className="text-[13px] text-muted">
                       {o.commitment.split(" · ")[0] || "Flexible"} · {o.closesAt ? `Apply by ${fmtDate(o.closesAt)}` : "Rolling"}

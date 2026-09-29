@@ -62,7 +62,7 @@ export default function AttendanceEventRow({ event, projectorUrl, backupSvg, bac
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Pill tone="blue" size="sm" href={disabled ? undefined : `/live/${event.id}`} target="_blank" disabled={disabled}>Open live display ↗</Pill>
-          {projectorUrl && <button type="button" className="pill pill-ghost pill-xs" onClick={copy} title="Works on a laptop that isn't signed in">{copied ? "Copied" : "Copy projector link"}</button>}
+          {projectorUrl && <button type="button" className="hide-phone pill pill-ghost pill-xs" onClick={copy} title="Works on a laptop that isn't signed in">{copied ? "Copied" : "Copy projector link"}</button>}
           <Pill size="xs" href={`/admin/events/${event.id}/attendance`}>Roster</Pill>
           <button type="button" className="pill pill-ghost pill-xs" onClick={() => setOpen((v) => !v)} aria-expanded={open} disabled={disabled}>{open ? "Hide backup" : "Backup code"}</button>
         </div>

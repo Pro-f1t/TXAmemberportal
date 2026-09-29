@@ -27,7 +27,7 @@ export default async function AdminEmployers({ searchParams }: { searchParams: P
   return (
     <div className="flex flex-col gap-5">
       <PageHeader eyebrow={`Exec console · Employers · ${employers.length}`} title="Employers" actions={<Pill href="/admin/employers?id=new" tone="blue">Add employer</Pill>} />
-      <div className="grid items-start gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+      <div className="grid items-start gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" }}>
         <Card>
           <Eyebrow>Partners</Eyebrow>
           <div className="mt-[18px] flex flex-col gap-2.5">

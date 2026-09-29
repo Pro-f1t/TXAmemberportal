@@ -37,7 +37,7 @@ export default async function EventsPage() {
           actions={<Pill href={calendarHref} target="_blank">Subscribe to Google Calendar</Pill>}
         />
 
-        <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+        <div className="grid items-stretch gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(320px, 100%), 1fr))" }}>
           <Card>
             <Eyebrow>Upcoming</Eyebrow>
             <div className="mt-[18px] flex flex-col gap-5">
