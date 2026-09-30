@@ -16,6 +16,7 @@ const VERB: Record<string, string> = {
   "opportunity.draft": "moved a posting to draft",
   "opportunity.scheduled": "scheduled a posting",
   "opportunity.closed": "archived a posting",
+  "opportunity.delete": "deleted a posting",
   "application.nextstep": "updated an applicant's next step",
   "event.create": "created an event",
   "event.update": "edited an event",

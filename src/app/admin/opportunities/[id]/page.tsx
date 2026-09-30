@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { staffPage } from "@/lib/auth/page";
 import { getOpportunity, getAllEmployers, getApplicationsForOpportunity } from "@/lib/firebase/portal";
 import PostingEditor from "@/components/PostingEditor";
+import { isPastDeadline } from "@/lib/models/Portal";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +30,8 @@ export default async function PostingPage({ params, searchParams }: { params: Pr
       defaultEmployerId={employer ?? ""}
       employers={employers.map((e) => ({ id: e.id, name: e.name, teams: e.teams, logoUrl: e.logoUrl }))}
       applicantCount={apps.length}
+      projectCount={apps.filter((a) => a.status === "placed" || a.status === "complete").length}
+      archived={!!opp && (opp.status === "closed" || isPastDeadline(opp))}
     />
   );
 }

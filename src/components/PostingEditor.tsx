@@ -1,5 +1,6 @@
 "use client";
 
+import DeletePostingButton from "@/components/DeletePostingButton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -27,9 +28,9 @@ const STATUS_TONE: Record<OpportunityStatus, "ok" | "warn" | "accent" | "muted">
 
 /** The Notion-style posting document. Everything is editable in place. */
 export default function PostingEditor({
-  uid, posting, employers, applicantCount, defaultEmployerId,
+  uid, posting, employers, applicantCount, projectCount = 0, archived = false, defaultEmployerId,
 }: {
-  uid: string; posting: PostingForm | null; employers: { id: string; name: string; teams: Team[]; logoUrl: string }[]; applicantCount: number; defaultEmployerId: string;
+  uid: string; posting: PostingForm | null; employers: { id: string; name: string; teams: Team[]; logoUrl: string }[]; applicantCount: number; projectCount?: number; archived?: boolean; defaultEmployerId: string;
 }) {
   const router = useRouter();
   const [form, setForm] = useState<PostingForm>(posting ?? { ...BLANK, employerId: defaultEmployerId });
@@ -216,6 +217,7 @@ export default function PostingEditor({
         {form.status !== "live" && <Pill onClick={() => save({ status: "live" })} disabled={busy}>Publish now</Pill>}
         {!isNew && <Pill href={`/admin/opportunities/${form.id}/applicants`}>View {applicantCount} applicant{applicantCount === 1 ? "" : "s"}</Pill>}
         <Pill href="/admin/opportunities">Back to opportunities</Pill>
+        {!isNew && archived && <DeletePostingButton id={form.id} title={form.title} applications={applicantCount} projects={projectCount} after="/admin/opportunities?filter=archived" size="md" />}
         {saved && <span className="self-center text-[13px] text-ok">{saved}</span>}
         {employer && !form.teams.length && <span className="self-center text-[13px] text-muted">Tip: pick the field teams so the right members see it.</span>}
       </div>

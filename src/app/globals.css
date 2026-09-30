@@ -242,6 +242,14 @@ a:hover .arrow-on { background: #fff; }
 .filter-bar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 
 
+/* Navigation progress bar (NavGuard): shows the instant a link is pressed. */
+.nav-progress {
+  position: fixed; top: 0; left: 0; z-index: 70; height: 2px; width: 0; opacity: 0;
+  background: var(--color-accent); box-shadow: 0 0 8px var(--color-accent); pointer-events: none;
+}
+.nav-progress-loading { width: 82%; opacity: 1; transition: width 5s cubic-bezier(0.05, 0.7, 0.1, 1), opacity 120ms; }
+.nav-progress-done { width: 100%; opacity: 0; transition: width 180ms ease-out, opacity 280ms 120ms; }
+
 /* ================= Phone layout (≤ 699px) =================
    Desktop spacing on a 390px screen left ~250px for content and made every page
    a long scroll. This layer tightens padding, type and controls so a screen shows

@@ -3,6 +3,7 @@ import { closesSoon, isPastDeadline, OPPORTUNITY_STATUS_LABEL } from "@/lib/mode
 import { teamShort } from "@/lib/models/Member";
 import { PageHeader, Pill, Card, Eyebrow, Badge, Row, RowText, Empty } from "@/components/ui";
 import ReopenButton from "@/components/ReopenButton";
+import DeletePostingButton from "@/components/DeletePostingButton";
 import { fmtDate } from "@/lib/utils/format";
 import ShowMore from "@/components/ShowMore";
 
@@ -19,6 +20,7 @@ export default async function AdminOpportunities({ searchParams }: { searchParam
   const shown = [...(filter === "drafts" ? drafts : filter === "archived" ? archived : active)].sort((a, b) => Number(b.pinned) - Number(a.pinned));
   const countFor = (id: string) => apps.filter((a) => a.opportunityId === id).length;
   const placedFor = (id: string) => apps.filter((a) => a.opportunityId === id && a.status === "placed").length;
+  const projectsFor = (id: string) => apps.filter((a) => a.opportunityId === id && (a.status === "placed" || a.status === "complete")).length;
 
   return (
     <div className="flex flex-col gap-5">
@@ -61,7 +63,7 @@ export default async function AdminOpportunities({ searchParams }: { searchParam
                   : closed ? <Badge tone="muted">Closed</Badge>
                   : closesSoon(o) ? <Badge tone="warn">Closes soon</Badge>
                   : <Badge tone="ok">Live</Badge>}
-                {closed ? <ReopenButton id={o.id} /> : <span className="pill pill-ghost pill-xs">Edit</span>}
+                {closed ? <><ReopenButton id={o.id} /><DeletePostingButton id={o.id} title={o.title} applications={n} projects={projectsFor(o.id)} /></> : <span className="pill pill-ghost pill-xs">Edit</span>}
               </Row>
             );
           })} />

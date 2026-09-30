@@ -1,6 +1,6 @@
 import { staffRoute, ApiError } from "@/lib/admin/route";
-import { upsertOpportunity, getEmployer, getOpportunity, OpportunityInput } from "@/lib/firebase/portal";
-import { OPPORTUNITY_STATUSES, OpportunityStatus, PostingQuestion, MAX_QUESTIONS } from "@/lib/models/Portal";
+import { upsertOpportunity, getEmployer, getOpportunity, deleteOpportunity, OpportunityInput } from "@/lib/firebase/portal";
+import { OPPORTUNITY_STATUSES, OpportunityStatus, PostingQuestion, MAX_QUESTIONS, isPastDeadline } from "@/lib/models/Portal";
 import { newId } from "@/lib/firebase/fs";
 import { isTeam } from "@/lib/models/Member";
 import { recordAudit } from "@/lib/firebase/audit";
@@ -60,4 +60,15 @@ export const PATCH = staffRoute(async ({ member, body }) => {
   const action = input.status && input.status !== prev.status ? `opportunity.${input.status}` : "opportunity.update";
   await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action, target: id, detail: input.title ?? prev.title });
   return { ok: true, id };
+});
+
+/** Delete an archived posting for good, along with its applications. Live, scheduled and draft postings must be archived first. */
+export const DELETE = staffRoute(async ({ member, body }) => {
+  const id = str(body.id, 40);
+  const prev = await getOpportunity(id);
+  if (!prev) throw new ApiError("Posting not found.", 404);
+  if (prev.status !== "closed" && !isPastDeadline(prev)) throw new ApiError("Only archived postings can be deleted. Close this one first.");
+  const removed = await deleteOpportunity(id);
+  await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: "opportunity.delete", target: id, detail: `${prev.title} (${prev.employerName || "no employer"}) · ${removed} application${removed === 1 ? "" : "s"} removed` });
+  return { ok: true };
 });

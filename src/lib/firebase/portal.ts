@@ -54,6 +54,18 @@ export async function getOpportunity(id: string): Promise<Opportunity | null> {
   return doc.exists ? toOpportunity(doc.id, doc.data()) : null;
 }
 
+/** Delete a posting and every application sent to it. Returns how many applications went with it. */
+export async function deleteOpportunity(id: string): Promise<number> {
+  const apps = await adminDb.collection(APPS).where("opportunityId", "==", id).get();
+  const refs = [adminDb.collection(OPPS).doc(id), ...apps.docs.map((d) => d.ref)];
+  for (let i = 0; i < refs.length; i += 450) {
+    const batch = adminDb.batch();
+    refs.slice(i, i + 450).forEach((r) => batch.delete(r));
+    await batch.commit();
+  }
+  return apps.size;
+}
+
 export async function getAllOpportunities(): Promise<Opportunity[]> {
   const snap = await adminDb.collection(OPPS).get();
   return snap.docs.map((d) => toOpportunity(d.id, d.data())).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
