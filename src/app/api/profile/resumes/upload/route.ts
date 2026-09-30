@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     if (member.resumes.length >= MAX_RESUMES) throw new Error(`You can keep up to ${MAX_RESUMES} resumes. Delete one first.`);
     const up = await readUpload(request, { maxBytes: MAX_BYTES, accept: /^application\/(pdf|x-pdf)$/, label: "Resumes" });
     if (!/\.pdf$/i.test(up.name)) throw new Error("Resumes must be PDFs.");
-    const url = await uploadToStorage(`resumes/${member.uid}/${Date.now()}-${safeFileName(up.name)}`, up.buffer, "application/pdf");
+    const url = await uploadToStorage(`resumes/${member.uid}/${Date.now()}-${safeFileName(up.name)}`, up.buffer, "application/pdf", { inline: safeFileName(up.name) });
     const resumes = normaliseResumes([
       ...member.resumes,
       { id: newId(), fileName: up.name, url, size: up.size, uploadedAt: new Date(), assignedTeams: [], isDefault: member.resumes.length === 0 },

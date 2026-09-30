@@ -19,13 +19,14 @@ export function safeFileName(name: string): string {
   return name.replace(/[^\w.\-]+/g, "_").slice(-120) || "file";
 }
 
-export async function uploadToStorage(path: string, data: Buffer, contentType: string): Promise<string> {
+export async function uploadToStorage(path: string, data: Buffer, contentType: string, opts: { inline?: string } = {}): Promise<string> {
   const token = randomUUID();
   const file = getStorage().bucket(BUCKET).file(path);
   await file.save(data, {
     contentType,
     resumable: false,
-    metadata: { metadata: { firebaseStorageDownloadTokens: token } },
+    // `inline` = open in the browser (PDF viewer) under this file name, rather than download.
+    metadata: { ...(opts.inline ? { contentDisposition: `inline; filename="${opts.inline.replace(/["\\\r\n]/g, "")}"` } : {}), metadata: { firebaseStorageDownloadTokens: token } },
   });
   const base = emulatorHost ? `http://${emulatorHost}` : "https://firebasestorage.googleapis.com";
   return `${base}/v0/b/${BUCKET}/o/${encodeURIComponent(path)}?alt=media&token=${token}`;

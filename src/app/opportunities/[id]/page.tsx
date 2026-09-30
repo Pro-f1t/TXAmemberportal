@@ -66,8 +66,22 @@ export default async function OpportunityPage({ params }: { params: Promise<{ id
           <Hairline className="my-6" />
           <Eyebrow>Summary</Eyebrow>
           <p className="m-0 mt-3 text-[18px] leading-[1.55]" style={{ letterSpacing: "-0.02em" }}>{opp.summary}</p>
-          <Eyebrow className="mt-7">Job description</Eyebrow>
+          {(opp.description.trim() || opp.jdPdfUrl) && <Eyebrow className="mt-7">Job description</Eyebrow>}
           <RichText text={opp.description} className="text-muted" firstGap={12} gap={14} />
+          {opp.jdPdfUrl && (
+            <>
+              <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl" style={{ background: "var(--color-surface-2)", padding: "14px 16px" }}>
+                <span className="badge badge-danger shrink-0">PDF</span>
+                <div className="min-w-0" style={{ flex: "1 1 200px" }}>
+                  <p className="m-0 truncate text-[15px] font-semibold">{opp.jdPdfName || "Job description.pdf"}</p>
+                  <p className="m-0 mt-1 text-[12px] text-muted">From {opp.employerName || "the employer"}</p>
+                </div>
+                <a href={opp.jdPdfUrl} target="_blank" rel="noreferrer" className="pill pill-blue pill-sm">Open PDF ↗</a>
+              </div>
+              {/* Inline preview on larger screens; phones use the button (mobile browsers only show page one inline). */}
+              <iframe src={`${opp.jdPdfUrl}#toolbar=0&navpanes=0&view=FitH`} title={`${opp.title}: job description PDF`} loading="lazy" className="hide-phone mt-3 w-full rounded-2xl" style={{ height: 720, border: 0, background: "#fff" }} />
+            </>
+          )}
           {isStaff(member) && (
             <div className="mt-7"><Pill href={`/admin/opportunities/${opp.id}`} size="sm">Edit in console</Pill></div>
           )}

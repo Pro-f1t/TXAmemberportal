@@ -35,6 +35,8 @@ export function toOpportunity(id: string, d: any): Opportunity {
     previewImageUrl: d.previewImageUrl ?? "",
     summary: d.summary ?? "",
     description: d.description ?? "",
+    jdPdfUrl: d.jdPdfUrl ?? "",
+    jdPdfName: d.jdPdfName ?? "",
     requiresTeamResume: !!d.requiresTeamResume,
     pinned: !!d.pinned,
     questions: (Array.isArray(d.questions) ? d.questions : [])

@@ -22,7 +22,7 @@ export default async function PostingPage({ params, searchParams }: { params: Pr
           ? {
               id: opp.id, title: opp.title, employerId: opp.employerId, teams: opp.teams, audienceTeams: opp.audienceTeams, commitment: opp.commitment,
               closesAt: opp.closesAt?.toISOString() ?? null, status: opp.status, publishAt: opp.publishAt?.toISOString() ?? null,
-              previewImageUrl: opp.previewImageUrl, summary: opp.summary, description: opp.description, requiresTeamResume: opp.requiresTeamResume, pinned: opp.pinned, questions: opp.questions,
+              previewImageUrl: opp.previewImageUrl, summary: opp.summary, description: opp.description, jdPdfUrl: opp.jdPdfUrl, jdPdfName: opp.jdPdfName, requiresTeamResume: opp.requiresTeamResume, pinned: opp.pinned, questions: opp.questions,
               publishedAt: opp.publishedAt?.toISOString() ?? null, updatedAt: opp.updatedAt.toISOString(), updatedByName: opp.updatedByName,
             }
           : null

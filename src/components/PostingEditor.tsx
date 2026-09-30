@@ -15,13 +15,13 @@ import DatePicker from "@/components/DatePicker";
 export type PostingForm = {
   id: string; title: string; employerId: string; teams: Team[]; audienceTeams: Team[]; commitment: string;
   closesAt: string | null; status: OpportunityStatus; publishAt: string | null; previewImageUrl: string;
-  summary: string; description: string; requiresTeamResume: boolean; pinned: boolean; questions: PostingQuestion[];
+  summary: string; description: string; jdPdfUrl: string; jdPdfName: string; requiresTeamResume: boolean; pinned: boolean; questions: PostingQuestion[];
   publishedAt: string | null; updatedAt: string; updatedByName: string;
 };
 
 const BLANK: PostingForm = {
   id: "", title: "", employerId: "", teams: [], audienceTeams: [], commitment: "", closesAt: null, status: "draft", publishAt: null,
-  previewImageUrl: "", summary: "", description: "", requiresTeamResume: true, pinned: false, questions: [], publishedAt: null, updatedAt: "", updatedByName: "",
+  previewImageUrl: "", summary: "", description: "", jdPdfUrl: "", jdPdfName: "", requiresTeamResume: true, pinned: false, questions: [], publishedAt: null, updatedAt: "", updatedByName: "",
 };
 
 const STATUS_TONE: Record<OpportunityStatus, "ok" | "warn" | "accent" | "muted"> = { live: "ok", draft: "warn", scheduled: "accent", closed: "muted" };
@@ -38,6 +38,7 @@ export default function PostingEditor({
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const pdfRef = useRef<HTMLInputElement>(null);
   const isNew = !form.id;
 
   const set = <K extends keyof PostingForm>(k: K, v: PostingForm[K]) => setForm((f) => ({ ...f, [k]: v }));
@@ -73,6 +74,22 @@ export default function PostingEditor({
     try {
       const { url } = await uploadViaApi("/api/admin/uploads/image", await shrinkImage(file, 1270));
       set("previewImageUrl", url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Upload failed.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const onPdf = async (file: File | undefined) => {
+    if (!file) return;
+    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) { setError("The job description file must be a PDF."); return; }
+    if (file.size > 4 * 1024 * 1024) { setError("Keep the PDF under 4 MB. Exporting it at a lower quality usually does it."); return; }
+    setBusy(true);
+    setError(null);
+    try {
+      const { url, name } = await uploadViaApi("/api/admin/uploads/pdf", file);
+      setForm((f) => ({ ...f, jdPdfUrl: url, jdPdfName: name }));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed.");
     } finally {
@@ -175,7 +192,27 @@ export default function PostingEditor({
 
       <p className="t-eyebrow mt-7">Job description</p>
       <textarea className="textarea mt-3" style={{ fontSize: 16, minHeight: 180 }} placeholder="What they'll do, who they'll work with, what's useful to know. Blank lines make paragraphs." value={form.description} onChange={(e) => set("description", e.target.value)} />
-      <p className="m-0 mt-6 text-[15px] text-muted">Blank lines become paragraphs. Members see the summary on the card and the full description on the posting.</p>
+      <p className="m-0 mt-3 text-[13px] text-muted">Blank lines become paragraphs. Members see the summary on the card and the full description on the posting.</p>
+
+      <p className="t-eyebrow mt-7">Job description PDF · optional</p>
+      <div className="mt-3 flex flex-wrap items-center gap-3 rounded-2xl" style={{ background: "var(--color-surface-2)", padding: "14px 16px" }}>
+        <div className="min-w-0" style={{ flex: "1 1 220px" }}>
+          {form.jdPdfUrl ? (
+            <>
+              <a href={form.jdPdfUrl} target="_blank" rel="noreferrer" className="block truncate text-[15px] font-semibold text-white hover:text-accent">{form.jdPdfName || "Job description.pdf"}</a>
+              <p className="m-0 mt-1 text-[12px] text-muted">Attached. Members can read it on the posting. Save the posting to keep it.</p>
+            </>
+          ) : (
+            <>
+              <p className="m-0 text-[15px] font-semibold">No PDF attached</p>
+              <p className="m-0 mt-1 text-[12px] text-muted">Got the JD from the employer as a PDF? Attach it here, up to 4 MB. You can leave the text above short or empty.</p>
+            </>
+          )}
+        </div>
+        <Pill size="xs" tone={form.jdPdfUrl ? "ghost" : "blue"} onClick={() => pdfRef.current?.click()} disabled={busy}>{busy ? "Uploading…" : form.jdPdfUrl ? "Replace PDF" : "Upload PDF"}</Pill>
+        {form.jdPdfUrl && <button type="button" className="pill pill-ghost pill-xs" style={{ color: "var(--color-danger)" }} onClick={() => setForm((f) => ({ ...f, jdPdfUrl: "", jdPdfName: "" }))} disabled={busy}>Remove</button>}
+        <input ref={pdfRef} type="file" accept="application/pdf,.pdf" className="hidden" onChange={(e) => { onPdf(e.target.files?.[0]); e.target.value = ""; }} />
+      </div>
 
       <Hairline className="my-6" />
       <div className="flex flex-wrap items-center justify-between gap-3">

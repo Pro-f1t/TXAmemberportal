@@ -28,6 +28,12 @@ async function parse(body: any): Promise<Partial<OpportunityInput>> {
   if ("previewImageUrl" in body) out.previewImageUrl = str(body.previewImageUrl, 2000).trim();
   if ("summary" in body) out.summary = str(body.summary, 1000).trim();
   if ("description" in body) out.description = str(body.description, 20000);
+  if ("jdPdfUrl" in body) {
+    const url = str(body.jdPdfUrl, 2000).trim();
+    if (url && !/^https?:\/\//.test(url)) throw new ApiError("The PDF link isn't valid. Upload it again.");
+    out.jdPdfUrl = url;
+    out.jdPdfName = url ? str(body.jdPdfName, 200).trim() || "Job description.pdf" : "";
+  }
   if ("requiresTeamResume" in body) out.requiresTeamResume = bool(body.requiresTeamResume, true);
   if ("pinned" in body) out.pinned = bool(body.pinned);
   if ("questions" in body) {
@@ -45,7 +51,7 @@ async function parse(body: any): Promise<Partial<OpportunityInput>> {
 export const POST = staffRoute(async ({ member, body }) => {
   const input = await parse(body);
   if (!input.title) throw new ApiError("Give the posting a title.");
-  const id = await upsertOpportunity(null, { status: "draft", teams: [], audienceTeams: [], requiresTeamResume: true, pinned: false, questions: [], ...input }, { uid: member.uid, name: member.name });
+  const id = await upsertOpportunity(null, { status: "draft", teams: [], audienceTeams: [], requiresTeamResume: true, pinned: false, questions: [], jdPdfUrl: "", jdPdfName: "", ...input }, { uid: member.uid, name: member.name });
   await recordAudit({ source: "console", actorUid: member.uid, actorName: member.name, action: "opportunity.create", target: id, detail: input.title });
   return { ok: true, id };
 });

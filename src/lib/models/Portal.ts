@@ -45,6 +45,8 @@ export interface Opportunity {
   previewImageUrl: string;
   summary: string;
   description: string; // plain text, blank-line separated paragraphs
+  jdPdfUrl: string; // optional: the employer's job description as a PDF
+  jdPdfName: string; // its original file name, shown to members
   requiresTeamResume: boolean;
   pinned: boolean; // held at the top of the members' Opportunities grid
   questions: PostingQuestion[];

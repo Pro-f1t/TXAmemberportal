@@ -5,11 +5,11 @@
  * writes them to Storage with the Admin SDK — so an upload only needs the
  * portal session, not the browser's separate Firebase Auth user.
  */
-export async function uploadViaApi(endpoint: string, file: File): Promise<{ url: string }> {
+export async function uploadViaApi(endpoint: string, file: File): Promise<{ url: string; name: string }> {
   const form = new FormData();
   form.append("file", file, file.name);
   const res = await fetch(endpoint, { method: "POST", body: form, credentials: "same-origin" });
-  let data: { ok?: boolean; url?: string; error?: string } = {};
+  let data: { ok?: boolean; url?: string; name?: string; error?: string } = {};
   try {
     data = await res.json();
   } catch {
@@ -20,7 +20,7 @@ export async function uploadViaApi(endpoint: string, file: File): Promise<{ url:
     if (res.status === 401 || res.status === 403) throw new Error("Your session has expired. Please sign in again, then retry.");
     throw new Error(data.error || `Upload failed (${res.status}).`);
   }
-  return { url: data.url || "" };
+  return { url: data.url || "", name: data.name || file.name };
 }
 
 /**
